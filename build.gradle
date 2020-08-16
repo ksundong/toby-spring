@@ -14,6 +14,7 @@ dependencies {
 
     implementation group: 'org.springframework', name: 'spring-context', version: springVersion
     implementation group: 'org.springframework', name: 'spring-expression', version: springVersion
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
     implementation 'mysql:mysql-connector-java:8.0.20'
     testImplementation 'junit:junit:4.12'
 }

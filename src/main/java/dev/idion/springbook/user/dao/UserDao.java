@@ -5,19 +5,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserDao {
 
-  private final ConnectionMaker connectionMaker;
+  private final DataSource dataSource;
 
-  public UserDao(ConnectionMaker connectionMaker) {
-    this.connectionMaker = connectionMaker;
+  public UserDao(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
-  public void add(User user) throws ClassNotFoundException, SQLException {
-    Connection c = connectionMaker.makeConnection();
+  public void add(User user) throws SQLException {
+    Connection c = dataSource.getConnection();
 
     try (PreparedStatement ps = c
         .prepareStatement("insert into USER(id, name, password) VALUES (?,?,?)")) {
@@ -29,8 +30,8 @@ public class UserDao {
     c.close();
   }
 
-  public User get(String id) throws ClassNotFoundException, SQLException {
-    Connection c = connectionMaker.makeConnection();
+  public User get(String id) throws SQLException {
+    Connection c = dataSource.getConnection();
 
     User user;
     try (PreparedStatement ps = c.prepareStatement("select * from USER where id = ?")) {
