@@ -18,12 +18,7 @@ public class UserService {
     return userDao.get(id);
   }
 
-  public void addUser(String id, String name, String password) throws SQLException {
-    User user = new User();
-    user.setId(id);
-    user.setName(name);
-    user.setPassword(password);
-
+  public void addUser(User user) throws SQLException {
     userDao.add(user);
     System.out.println(user.getId() + " 등록 성공");
   }

@@ -14,7 +14,10 @@ public class Main {
     UserService userService = context.getBean(UserService.class);
 
     String id = "whiteship";
-    userService.addUser(id, "백기선", "married");
+    String name = "백기선";
+    String married = "married";
+    User user1 = new User(id, name, married);
+    userService.addUser(user1);
 
     User user2 = userService.getUser(id);
     System.out.println(user2.getName());
