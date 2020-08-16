@@ -11,7 +11,7 @@ public class Main {
 
   public static void main(String[] args) throws SQLException, ClassNotFoundException {
     ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-    UserDao dao = context.getBean("userDao", UserDao.class);
+    UserDao dao = context.getBean(UserDao.class);
 
     User user = new User();
     user.setId("whiteship");
