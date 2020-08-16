@@ -1,7 +1,6 @@
 package dev.idion.springbook;
 
-import dev.idion.springbook.user.dao.ConnectionMaker;
-import dev.idion.springbook.user.dao.DConnectionMaker;
+import dev.idion.springbook.user.dao.DaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
 import java.sql.SQLException;
@@ -9,8 +8,7 @@ import java.sql.SQLException;
 public class Main {
 
   public static void main(String[] args) throws SQLException, ClassNotFoundException {
-    ConnectionMaker connectionMaker = new DConnectionMaker();
-    UserDao dao = new UserDao(connectionMaker);
+    UserDao dao = new DaoFactory().userDao();
 
     User user = new User();
     user.setId("whiteship");
