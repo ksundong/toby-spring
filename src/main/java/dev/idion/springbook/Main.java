@@ -1,6 +1,5 @@
 package dev.idion.springbook;
 
-import dev.idion.springbook.user.dao.NUserDao;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
 import java.sql.SQLException;
@@ -8,7 +7,7 @@ import java.sql.SQLException;
 public class Main {
 
   public static void main(String[] args) throws SQLException, ClassNotFoundException {
-    UserDao dao = new NUserDao(); // 상위클래스는 비즈니스 로직에 관심, 하위클래스는 DB연결 로직에 관심
+    UserDao dao = new UserDao(); // 상위클래스는 비즈니스 로직에 관심, 하위클래스는 DB연결 로직에 관심
 
     User user = new User();
     user.setId("whiteship");
