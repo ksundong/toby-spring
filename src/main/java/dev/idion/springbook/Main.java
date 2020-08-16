@@ -20,9 +20,12 @@ public class Main {
     userService.addUser(user1);
 
     User user2 = userService.getUser(id);
-    System.out.println(user2.getName());
-    System.out.println(user2.getPassword());
-
-    System.out.println(user2.getId() + " 조회 성공");
+    if (!user1.getName().equals(user2.getName())) {
+      System.out.println("테스트 실패(name)");
+    }
+    if (!user1.getPassword().equals(user2.getPassword())) {
+      System.out.println("테스트 실패(password)");
+    }
+    System.out.println("조회 테스트 성공");
   }
 }
