@@ -22,10 +22,10 @@ public class Main {
     User user2 = userService.getUser(id);
     if (!user1.getName().equals(user2.getName())) {
       System.out.println("테스트 실패(name)");
-    }
-    if (!user1.getPassword().equals(user2.getPassword())) {
+    } else if (!user1.getPassword().equals(user2.getPassword())) {
       System.out.println("테스트 실패(password)");
+    } else {
+      System.out.println("조회 테스트 성공");
     }
-    System.out.println("조회 테스트 성공");
   }
 }
