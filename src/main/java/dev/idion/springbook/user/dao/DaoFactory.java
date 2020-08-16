@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-@ComponentScan
+@ComponentScan(basePackages = "dev.idion.springbook.user")
 public class DaoFactory {
 
   @Bean
