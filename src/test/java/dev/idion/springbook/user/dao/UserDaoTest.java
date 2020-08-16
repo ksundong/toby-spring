@@ -1,31 +1,31 @@
-package dev.idion.springbook;
+package dev.idion.springbook.user.dao;
 
-import dev.idion.springbook.user.dao.DaoFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class Main {
+class UserDaoTest {
 
-  public static void main(String[] args) throws SQLException {
+  @Test
+  void addAndGet() throws SQLException {
     ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
     UserService userService = context.getBean(UserService.class);
 
-    String id = "whiteship";
-    String name = "백기선";
-    String married = "married";
+    String id = "gyumee";
+    String name = "박성철";
+    String married = "springno1";
     User user1 = new User(id, name, married);
+
     userService.addUser(user1);
 
     User user2 = userService.getUser(id);
-    if (!user1.getName().equals(user2.getName())) {
-      System.out.println("테스트 실패(name)");
-    } else if (!user1.getPassword().equals(user2.getPassword())) {
-      System.out.println("테스트 실패(password)");
-    } else {
-      System.out.println("조회 테스트 성공");
-    }
+
+    assertEquals(user2.getName(), user1.getName());
+    assertEquals(user2.getPassword(), user1.getPassword());
   }
 }
