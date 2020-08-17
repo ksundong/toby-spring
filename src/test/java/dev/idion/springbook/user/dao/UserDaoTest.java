@@ -6,20 +6,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@DirtiesContext // 테스트 메소드에서 애플리케이션 컨텍스트의 구성이나 상태를 변경함을 알려줌
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DaoFactory.class)
 class UserDaoTest {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private UserDao userDao;
 
   private User user1;
   private User user2;
@@ -30,6 +37,10 @@ class UserDaoTest {
     this.user1 = new User("gyumee", "박성철", "springno1");
     this.user2 = new User("leegw700", "이길원", "springno2");
     this.user3 = new User("bumjin", "박범진", "springno3");
+
+    DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb",
+        "spring", "book", true);
+    userDao.setDataSource(dataSource);
   }
 
   @Test

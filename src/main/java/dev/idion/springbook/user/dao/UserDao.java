@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserDao {
 
-  private final DataSource dataSource;
+  private DataSource dataSource;
 
   public UserDao(DataSource dataSource) {
     this.dataSource = dataSource;
@@ -72,5 +72,9 @@ public class UserDao {
       rs.next();
       return rs.getInt(1);
     }
+  }
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 }
