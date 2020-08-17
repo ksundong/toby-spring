@@ -8,12 +8,19 @@ import dev.idion.springbook.user.service.UserService;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoFactory.class)
 class UserDaoTest {
 
+  @Autowired
+  private ApplicationContext context;
   private UserService userService;
   private User user1;
   private User user2;
@@ -21,7 +28,6 @@ class UserDaoTest {
 
   @BeforeEach
   void setUp() {
-    ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
     this.userService = context.getBean(UserService.class);
     this.user1 = new User("gyumee", "박성철", "springno1");
     this.user2 = new User("leegw700", "이길원", "springno2");

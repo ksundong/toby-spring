@@ -15,6 +15,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-context', version: springVersion
     implementation group: 'org.springframework', name: 'spring-expression', version: springVersion
     implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
+    implementation group: 'org.springframework', name: 'spring-test', version: springVersion
     implementation 'mysql:mysql-connector-java:8.0.20'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2'
