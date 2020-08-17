@@ -1,6 +1,7 @@
 package dev.idion.springbook.user.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 class UserDaoTest {
 
@@ -55,5 +57,17 @@ class UserDaoTest {
 
     userService.addUser(user3);
     assertEquals(3, userService.countUsers());
+  }
+
+  @Test
+  void getUserFailure() {
+    assertThrows(EmptyResultDataAccessException.class, () -> {
+      ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+      UserService userService = context.getBean(UserService.class);
+
+      userService.deleteUsers();
+      assertEquals(0, userService.countUsers());
+      userService.getUser("unknown_id");
+    });
   }
 }
