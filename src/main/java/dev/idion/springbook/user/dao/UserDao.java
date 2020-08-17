@@ -48,4 +48,13 @@ public class UserDao {
 
     return user;
   }
+
+  public void deleteAll() throws SQLException {
+    Connection c = dataSource.getConnection();
+
+    try (PreparedStatement ps = c.prepareStatement("delete from USER")) {
+      ps.executeUpdate();
+    }
+    c.close();
+  }
 }
