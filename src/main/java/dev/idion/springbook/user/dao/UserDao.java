@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -33,18 +34,23 @@ public class UserDao {
   public User get(String id) throws SQLException {
     Connection c = dataSource.getConnection();
 
-    User user;
+    User user = null;
     try (PreparedStatement ps = c.prepareStatement("select * from USER where id = ?")) {
       ps.setString(1, id);
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
-        user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+        if (rs.next()) {
+          user = new User();
+          user.setId(rs.getString("id"));
+          user.setName(rs.getString("name"));
+          user.setPassword(rs.getString("password"));
+        }
       }
     }
     c.close();
+
+    if (user == null) {
+      throw new EmptyResultDataAccessException(1);
+    }
 
     return user;
   }
