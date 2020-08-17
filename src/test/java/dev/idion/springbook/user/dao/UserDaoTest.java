@@ -19,15 +19,12 @@ class UserDaoTest {
     userService.deleteUsers();
     assertEquals(0, userService.countUsers());
 
-    String id = "gyumee";
-    String name = "박성철";
-    String married = "springno1";
-    User user1 = new User(id, name, married);
+    User user1 = new User("gyumee", "박성철", "springno1");
 
     userService.addUser(user1);
     assertEquals(1, userService.countUsers());
 
-    User user2 = userService.getUser(id);
+    User user2 = userService.getUser(user1.getId());
 
     assertEquals(user1.getName(), user2.getName());
     assertEquals(user1.getPassword(), user2.getPassword());
