@@ -15,59 +15,58 @@ import org.springframework.dao.EmptyResultDataAccessException;
 class UserDaoTest {
 
   private UserService userService;
+  private User user1;
+  private User user2;
+  private User user3;
 
   @BeforeEach
   void setUp() {
     ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
     this.userService = context.getBean(UserService.class);
+    this.user1 = new User("gyumee", "박성철", "springno1");
+    this.user2 = new User("leegw700", "이길원", "springno2");
+    this.user3 = new User("bumjin", "박범진", "springno3");
   }
 
   @Test
   void addAndGet() throws SQLException {
-    userService.deleteUsers();
-    assertEquals(0, userService.countUsers());
+    this.userService.deleteUsers();
+    assertEquals(0, this.userService.countUsers());
 
-    User user1 = new User("gyumee", "박성철", "springno1");
-    User user2 = new User("leegw700", "이길원", "springno2");
+    this.userService.addUser(this.user1);
+    this.userService.addUser(this.user2);
+    assertEquals(2, this.userService.countUsers());
 
-    userService.addUser(user1);
-    userService.addUser(user2);
-    assertEquals(2, userService.countUsers());
+    User userGet1 = this.userService.getUser(this.user1.getId());
+    assertEquals(this.user1.getName(), userGet1.getName());
+    assertEquals(this.user1.getPassword(), userGet1.getPassword());
 
-    User userGet1 = userService.getUser(user1.getId());
-    assertEquals(user1.getName(), userGet1.getName());
-    assertEquals(user1.getPassword(), userGet1.getPassword());
-
-    User userGet2 = userService.getUser(user2.getId());
-    assertEquals(user2.getName(), userGet2.getName());
-    assertEquals(user2.getPassword(), userGet2.getPassword());
+    User userGet2 = this.userService.getUser(this.user2.getId());
+    assertEquals(this.user2.getName(), userGet2.getName());
+    assertEquals(this.user2.getPassword(), userGet2.getPassword());
   }
 
   @Test
   void count() throws SQLException {
-    User user1 = new User("gyumee", "박성철", "springno1");
-    User user2 = new User("leegw700", "이길원", "springno2");
-    User user3 = new User("bumjin", "박범진", "springno3");
+    this.userService.deleteUsers();
+    assertEquals(0, this.userService.countUsers());
 
-    userService.deleteUsers();
-    assertEquals(0, userService.countUsers());
+    this.userService.addUser(this.user1);
+    assertEquals(1, this.userService.countUsers());
 
-    userService.addUser(user1);
-    assertEquals(1, userService.countUsers());
+    this.userService.addUser(this.user2);
+    assertEquals(2, this.userService.countUsers());
 
-    userService.addUser(user2);
-    assertEquals(2, userService.countUsers());
-
-    userService.addUser(user3);
-    assertEquals(3, userService.countUsers());
+    this.userService.addUser(user3);
+    assertEquals(3, this.userService.countUsers());
   }
 
   @Test
   void getUserFailure() {
     assertThrows(EmptyResultDataAccessException.class, () -> {
-      userService.deleteUsers();
-      assertEquals(0, userService.countUsers());
-      userService.getUser("unknown_id");
+      this.userService.deleteUsers();
+      assertEquals(0, this.userService.countUsers());
+      this.userService.getUser("unknown_id");
     });
   }
 }
