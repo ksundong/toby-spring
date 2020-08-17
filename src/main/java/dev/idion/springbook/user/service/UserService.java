@@ -22,4 +22,12 @@ public class UserService {
     userDao.add(user);
     System.out.println(user.getId() + " 등록 성공");
   }
+
+  public void deleteUsers() throws SQLException {
+    userDao.deleteAll();
+  }
+
+  public int countUsers() throws SQLException {
+    return userDao.getCount();
+  }
 }
