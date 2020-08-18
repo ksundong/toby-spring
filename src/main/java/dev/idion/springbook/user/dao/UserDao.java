@@ -18,8 +18,25 @@ public class UserDao {
     this.dataSource = dataSource;
   }
 
+  public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
+    try (Connection c = dataSource.getConnection();
+        PreparedStatement ps = stmt.makePreparedStatement(c)
+    ) {
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw e;
+    }
+  }
+
   public void add(User user) throws SQLException {
-    jdbcContextWithStatementStrategy(new AddStatement(user));
+    jdbcContextWithStatementStrategy(c -> {
+      PreparedStatement ps = c
+          .prepareStatement("insert into USER(id, name, password) VALUES (?,?,?)");
+      ps.setString(1, user.getId());
+      ps.setString(2, user.getName());
+      ps.setString(3, user.getPassword());
+      return ps;
+    });
   }
 
   public User get(String id) throws SQLException {
@@ -47,17 +64,7 @@ public class UserDao {
   }
 
   public void deleteAll() throws SQLException {
-    jdbcContextWithStatementStrategy(new DeleteAllStatement());
-  }
-
-  public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-    try (Connection c = dataSource.getConnection();
-        PreparedStatement ps = stmt.makePreparedStatement(c)
-    ) {
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw e;
-    }
+    jdbcContextWithStatementStrategy(c -> c.prepareStatement("delete from USER"));
   }
 
   public int getCount() throws SQLException {
