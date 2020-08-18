@@ -19,16 +19,7 @@ public class UserDao {
   }
 
   public void add(User user) throws SQLException {
-    Connection c = dataSource.getConnection();
-
-    try (PreparedStatement ps = c
-        .prepareStatement("insert into USER(id, name, password) VALUES (?,?,?)")) {
-      ps.setString(1, user.getId());
-      ps.setString(2, user.getName());
-      ps.setString(3, user.getPassword());
-      ps.executeUpdate();
-    }
-    c.close();
+    jdbcContextWithStatementStrategy(new AddStatement(user));
   }
 
   public User get(String id) throws SQLException {
