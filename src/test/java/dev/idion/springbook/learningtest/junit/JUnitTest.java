@@ -10,19 +10,19 @@ class JUnitTest {
 
   @Test
   void test1() {
-    assertNotSame(this, testObject);
+    assertNotSame(testObject, this);
     testObject = this;
   }
 
   @Test
   void test2() {
-    assertNotSame(this, testObject);
+    assertNotSame(testObject, this);
     testObject = this;
   }
 
   @Test
   void test3() {
-    assertNotSame(this, testObject);
+    assertNotSame(testObject, this);
     testObject = this;
   }
 }
