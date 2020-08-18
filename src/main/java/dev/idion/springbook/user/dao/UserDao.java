@@ -66,12 +66,15 @@ public class UserDao {
   }
 
   public int getCount() throws SQLException {
-    Connection c = dataSource.getConnection();
-
-    try (PreparedStatement ps = c.prepareStatement("select count(*) from USER");
-        ResultSet rs = ps.executeQuery()) {
-      rs.next();
-      return rs.getInt(1);
+    try (Connection c = dataSource.getConnection()) {
+      try (PreparedStatement ps = c.prepareStatement("select count(*) from USER")) {
+        try (ResultSet rs = ps.executeQuery()) {
+          rs.next();
+          return rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      throw e;
     }
   }
 
