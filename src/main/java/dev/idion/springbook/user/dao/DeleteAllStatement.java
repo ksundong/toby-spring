@@ -8,8 +8,7 @@ public class DeleteAllStatement implements StatementStrategy {
 
   @Override
   public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-    try (PreparedStatement ps = c.prepareStatement("delete from USER")) {
-      return ps;
-    }
+    return c.prepareStatement("delete from USER");
+
   }
 }
