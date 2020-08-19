@@ -55,9 +55,6 @@ public class UserDao {
   }
 
   public Integer getCount() {
-    return this.jdbcTemplate.query("select count(*) from USER", rs -> {
-      rs.next();
-      return rs.getInt(1);
-    });
+    return this.jdbcTemplate.queryForObject("select count(*) from USER", Integer.class);
   }
 }
