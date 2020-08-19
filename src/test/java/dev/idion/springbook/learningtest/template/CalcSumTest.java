@@ -26,5 +26,4 @@ class CalcSumTest {
   void multiplyOfNumbers() throws IOException {
     assertThat((int) calculator.calcMultifly(this.numFilepath)).isEqualTo(24);
   }
-
 }
