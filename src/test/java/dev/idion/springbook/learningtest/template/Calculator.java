@@ -17,6 +17,17 @@ public class Calculator {
     });
   }
 
+  public Integer calcMultifly(String filepath) throws IOException {
+    return fileReadTemplate(filepath, br -> {
+      int multifly = 1;
+      String line;
+      while ((line = br.readLine()) != null) {
+        multifly *= Integer.parseInt(line);
+      }
+      return multifly;
+    });
+  }
+
   public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback)
       throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
@@ -26,4 +37,5 @@ public class Calculator {
       throw e;
     }
   }
+
 }
