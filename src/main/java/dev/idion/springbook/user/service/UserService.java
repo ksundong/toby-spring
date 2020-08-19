@@ -2,7 +2,6 @@ package dev.idion.springbook.user.service;
 
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
-import java.sql.SQLException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,20 +13,20 @@ public class UserService {
     this.userDao = userDao;
   }
 
-  public User getUser(String id) throws SQLException {
+  public User getUser(String id) {
     return userDao.get(id);
   }
 
-  public void addUser(User user) throws SQLException {
+  public void addUser(User user) {
     userDao.add(user);
     System.out.println(user.getId() + " 등록 성공");
   }
 
-  public void deleteUsers() throws SQLException {
+  public void deleteUsers() {
     userDao.deleteAll();
   }
 
-  public int countUsers() throws SQLException {
+  public int countUsers() {
     return userDao.getCount();
   }
 }

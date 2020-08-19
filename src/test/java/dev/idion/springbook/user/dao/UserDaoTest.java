@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ class UserDaoTest {
   }
 
   @Test
-  void addAndGet() throws SQLException {
+  void addAndGet() {
     this.userService.deleteUsers();
     assertEquals(0, this.userService.countUsers());
 
@@ -53,7 +52,7 @@ class UserDaoTest {
   }
 
   @Test
-  void count() throws SQLException {
+  void count() {
     this.userService.deleteUsers();
     assertEquals(0, this.userService.countUsers());
 
