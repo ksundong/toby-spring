@@ -81,6 +81,9 @@ class UserDaoTest {
   void getAll() {
     userService.deleteUsers();
 
+    List<User> users0 = userService.getAll();
+    assertThat(users0).hasSize(0);
+
     userService.addUser(user1);
     List<User> users1 = userService.getAll();
     assertThat(users1).hasSize(1).usingFieldByFieldElementComparator().contains(user1);
