@@ -26,7 +26,7 @@ class UserDaoTest {
     DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb",
         "spring", "book", true);
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    UserDao userDao = new UserDao(jdbcTemplate, dataSource);
+    UserDao userDao = new UserDao(jdbcTemplate);
 
     this.userService = new UserService(userDao);
     this.user1 = new User("gyumee", "박성철", "springno1");
