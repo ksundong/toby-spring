@@ -7,28 +7,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserDao {
 
-  private final JdbcContext jdbcContext;
+  private final JdbcTemplate jdbcTemplate;
   private final DataSource dataSource;
 
-  public UserDao(JdbcContext jdbcContext, DataSource dataSource) {
-    this.jdbcContext = jdbcContext;
+  public UserDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    this.jdbcTemplate = jdbcTemplate;
     this.dataSource = dataSource;
   }
 
-  public void add(User user) throws SQLException {
-    jdbcContext.workWithStatementStrategy(c -> {
-      PreparedStatement ps = c
-          .prepareStatement("insert into USER(id, name, password) VALUES (?,?,?)");
-      ps.setString(1, user.getId());
-      ps.setString(2, user.getName());
-      ps.setString(3, user.getPassword());
-      return ps;
-    });
+  public void add(User user) {
+    jdbcTemplate.update("insert into USER(id, name, password) VALUES (?,?,?)"
+        , user.getId(), user.getName(), user.getPassword());
   }
 
   public User get(String id) throws SQLException {
@@ -55,8 +50,8 @@ public class UserDao {
     return user;
   }
 
-  public void deleteAll() throws SQLException {
-    this.jdbcContext.executeSql("delete from USER");
+  public void deleteAll() {
+    this.jdbcTemplate.update("delete from USER");
   }
 
   public int getCount() throws SQLException {

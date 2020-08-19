@@ -3,8 +3,11 @@ package dev.idion.springbook.user.dao;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+@Configuration
 @ComponentScan(basePackages = "dev.idion.springbook.user")
 public class DaoFactory {
 
@@ -18,5 +21,10 @@ public class DaoFactory {
     dataSource.setPassword("book");
 
     return dataSource;
+  }
+
+  @Bean
+  public JdbcTemplate jdbcTemplate() {
+    return new JdbcTemplate(dataSource());
   }
 }
