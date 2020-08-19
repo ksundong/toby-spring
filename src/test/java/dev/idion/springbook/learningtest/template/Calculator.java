@@ -17,7 +17,7 @@ public class Calculator {
     });
   }
 
-  public Integer calcMultifly(String filepath) throws IOException {
+  public Integer calcMultiply(String filepath) throws IOException {
     return fileReadTemplate(filepath, br -> {
       int multifly = 1;
       String line;
