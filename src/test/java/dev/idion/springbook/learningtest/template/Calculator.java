@@ -7,35 +7,25 @@ import java.io.IOException;
 public class Calculator {
 
   public Integer calcSum(String filepath) throws IOException {
-    return fileReadTemplate(filepath, br -> {
-      int sum = 0;
-      String line;
-      while ((line = br.readLine()) != null) {
-        sum += Integer.parseInt(line);
-      }
-      return sum;
-    });
+    return lineReadTemplate(filepath, 0, (line, value) -> value + Integer.parseInt(line));
   }
 
   public Integer calcMultiply(String filepath) throws IOException {
-    return fileReadTemplate(filepath, br -> {
-      int multifly = 1;
-      String line;
-      while ((line = br.readLine()) != null) {
-        multifly *= Integer.parseInt(line);
-      }
-      return multifly;
-    });
+    return lineReadTemplate(filepath, 1, (line, value) -> value * Integer.parseInt(line));
   }
 
-  public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback)
+  public Integer lineReadTemplate(String filepath, int initVal, LineCallback callback)
       throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-      return callback.doSomethingWithReader(br);
+      int res = initVal;
+      String line;
+      while ((line = br.readLine()) != null) {
+        res = callback.doSomethingWithLine(line, res);
+      }
+      return res;
     } catch (IOException e) {
       System.out.println(e.getMessage());
       throw e;
     }
   }
-
 }
