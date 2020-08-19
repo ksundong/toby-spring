@@ -6,24 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserDao {
 
-  @Autowired
-  private JdbcContext jdbcContext;
+  private final JdbcContext jdbcContext;
+  private final DataSource dataSource;
 
-  @Autowired
-  private DataSource dataSource;
-
-  public void setJdbcContext(JdbcContext jdbcContext) {
+  public UserDao(JdbcContext jdbcContext, DataSource dataSource) {
     this.jdbcContext = jdbcContext;
-  }
-
-  public void setDataSource(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 

@@ -4,16 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JdbcContext {
 
-  @Autowired
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
-  public void setDataSource(DataSource dataSource) {
+  public JdbcContext(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
