@@ -14,10 +14,10 @@ public class Calculator {
     return lineReadTemplate(filepath, 1, (line, value) -> value * Integer.parseInt(line));
   }
 
-  public Integer lineReadTemplate(String filepath, int initVal, LineCallback callback)
+  public <T> T lineReadTemplate(String filepath, T initVal, LineCallback<T> callback)
       throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-      int res = initVal;
+      T res = initVal;
       String line;
       while ((line = br.readLine()) != null) {
         res = callback.doSomethingWithLine(line, res);
