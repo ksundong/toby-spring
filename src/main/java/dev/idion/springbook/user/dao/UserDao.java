@@ -1,6 +1,7 @@
 package dev.idion.springbook.user.dao;
 
 import dev.idion.springbook.user.domain.User;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -35,5 +36,15 @@ public class UserDao {
 
   public Integer getCount() {
     return this.jdbcTemplate.queryForObject("select count(*) from USER", Integer.class);
+  }
+
+  public List<User> getAll() {
+    return this.jdbcTemplate.query("select * from USER order by id", (rs, rowNum) -> {
+      User user = new User();
+      user.setId(rs.getString("id"));
+      user.setName(rs.getString("name"));
+      user.setPassword(rs.getString("password"));
+      return user;
+    });
   }
 }

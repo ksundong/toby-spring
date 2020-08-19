@@ -2,6 +2,7 @@ package dev.idion.springbook.user.service;
 
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,5 +29,9 @@ public class UserService {
 
   public int countUsers() {
     return userDao.getCount();
+  }
+
+  public List<User> getAll() {
+    return userDao.getAll();
   }
 }

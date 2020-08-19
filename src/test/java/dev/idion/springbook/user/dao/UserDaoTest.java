@@ -83,18 +83,19 @@ class UserDaoTest {
 
     userService.addUser(user1);
     List<User> users1 = userService.getAll();
-    assertThat(users1).hasSize(1).contains(user1);
+    assertThat(users1).hasSize(1).usingFieldByFieldElementComparator().contains(user1);
     assertThat(users1.get(0)).isEqualToComparingFieldByField(user1);
 
     userService.addUser(user2);
     List<User> users2 = userService.getAll();
-    assertThat(users2).hasSize(2).contains(user1, user2);
+    assertThat(users2).hasSize(2).usingFieldByFieldElementComparator().contains(user1, user2);
     assertThat(users2.get(0)).isEqualToComparingFieldByField(user1);
     assertThat(users2.get(1)).isEqualToComparingFieldByField(user2);
 
     userService.addUser(user3);
     List<User> users3 = userService.getAll();
-    assertThat(users3).hasSize(3).contains(user1, user2, user3);
+    assertThat(users3).hasSize(3).usingFieldByFieldElementComparator()
+        .contains(user1, user2, user3);
     assertThat(users3.get(0)).isEqualToComparingFieldByField(user3);
     assertThat(users3.get(1)).isEqualToComparingFieldByField(user1);
     assertThat(users3.get(2)).isEqualToComparingFieldByField(user2);
