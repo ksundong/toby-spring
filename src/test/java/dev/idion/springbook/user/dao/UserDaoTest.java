@@ -1,9 +1,10 @@
 package dev.idion.springbook.user.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import dev.idion.springbook.exception.DuplicateUserIdException;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
 import java.util.List;
@@ -54,6 +55,17 @@ class UserDaoTest {
   }
 
   @Test
+  void duplicateUserException() {
+    this.userService.deleteUsers();
+    assertEquals(0, this.userService.countUsers());
+
+    assertThatThrownBy(() -> {
+      this.userService.addUser(this.user1);
+      this.userService.addUser(this.user1);
+    }).isInstanceOf(DuplicateUserIdException.class);
+  }
+
+  @Test
   void count() {
     this.userService.deleteUsers();
     assertEquals(0, this.userService.countUsers());
@@ -70,11 +82,11 @@ class UserDaoTest {
 
   @Test
   void getUserFailure() {
-    assertThrows(EmptyResultDataAccessException.class, () -> {
+    assertThatThrownBy(() -> {
       this.userService.deleteUsers();
       assertEquals(0, this.userService.countUsers());
       this.userService.getUser("unknown_id");
-    });
+    }).isInstanceOf(EmptyResultDataAccessException.class);
   }
 
   @Test

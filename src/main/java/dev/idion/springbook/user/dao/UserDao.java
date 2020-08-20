@@ -1,7 +1,9 @@
 package dev.idion.springbook.user.dao;
 
+import dev.idion.springbook.exception.DuplicateUserIdException;
 import dev.idion.springbook.user.domain.User;
 import java.util.List;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -22,9 +24,13 @@ public class UserDao {
     this.jdbcOperations = jdbcOperations;
   }
 
-  public void add(User user) {
-    jdbcOperations.update("insert into USER(id, name, password) VALUES (?,?,?)"
-        , user.getId(), user.getName(), user.getPassword());
+  public void add(User user) throws DuplicateUserIdException {
+    try {
+      jdbcOperations.update("insert into USER(id, name, password) VALUES (?,?,?)"
+          , user.getId(), user.getName(), user.getPassword());
+    } catch (DuplicateKeyException e) {
+      throw new DuplicateUserIdException(e);
+    }
   }
 
   public User get(String id) {
