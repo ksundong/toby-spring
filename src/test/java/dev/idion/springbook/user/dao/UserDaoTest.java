@@ -4,13 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import dev.idion.springbook.exception.DuplicateUserIdException;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -62,7 +62,7 @@ class UserDaoTest {
     assertThatThrownBy(() -> {
       this.userService.addUser(this.user1);
       this.userService.addUser(this.user1);
-    }).isInstanceOf(DuplicateUserIdException.class);
+    }).isInstanceOf(DuplicateKeyException.class);
   }
 
   @Test
