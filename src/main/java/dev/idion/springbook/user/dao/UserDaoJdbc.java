@@ -29,7 +29,7 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public void add(User user) throws DuplicateKeyException {
-    jdbcOperations
+    this.jdbcOperations
         .update("insert into USER(id, name, password, login, recommend, level) VALUES (?,?,?,?,?,?)"
             , user.getId(), user.getName(), user.getPassword(), user.getLogin(),
             user.getRecommend(), user.getLevel().toString());
@@ -54,5 +54,13 @@ public class UserDaoJdbc implements UserDao {
   @Override
   public List<User> getAll() {
     return this.jdbcOperations.query("select * from USER order by id", this.userMapper);
+  }
+
+  @Override
+  public void update(User user) {
+    this.jdbcOperations.update(
+        "update USER set name = ?, password = ?, login = ?, recommend = ?, level = ? where id = ?",
+        user.getName(), user.getPassword(), user.getLogin(), user.getRecommend(),
+        user.getLevel().toString(), user.getId());
   }
 }

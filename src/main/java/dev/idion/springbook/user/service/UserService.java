@@ -34,4 +34,8 @@ public class UserService {
   public List<User> getAll() {
     return userDao.getAll();
   }
+
+  public void updateUser(User user) {
+    userDao.update(user);
+  }
 }
