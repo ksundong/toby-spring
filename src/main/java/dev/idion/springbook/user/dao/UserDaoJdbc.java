@@ -1,5 +1,6 @@
 package dev.idion.springbook.user.dao;
 
+import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import java.util.List;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,6 +17,9 @@ public class UserDaoJdbc implements UserDao {
     user.setId(rs.getString("id"));
     user.setName(rs.getString("name"));
     user.setPassword(rs.getString("password"));
+    user.setLogin(rs.getInt("login"));
+    user.setRecommend(rs.getInt("recommend"));
+    user.setLevel(Level.valueOf(rs.getString("level")));
     return user;
   };
 
@@ -25,8 +29,10 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public void add(User user) throws DuplicateKeyException {
-    jdbcOperations.update("insert into USER(id, name, password) VALUES (?,?,?)"
-        , user.getId(), user.getName(), user.getPassword());
+    jdbcOperations
+        .update("insert into USER(id, name, password, login, recommend, level) VALUES (?,?,?,?,?,?)"
+            , user.getId(), user.getName(), user.getPassword(), user.getLogin(),
+            user.getRecommend(), user.getLevel().toString());
   }
 
   @Override
