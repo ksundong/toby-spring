@@ -86,4 +86,27 @@ class UserServiceTest {
       assertThat(userUpdate.getLevel()).isEqualByComparingTo(user.getLevel());
     }
   }
+
+  static class TestUserService extends UserService {
+
+    private final String id;
+
+    public TestUserService(UserDao userDao, UserLevelUpgradePolicy userLevelUpgradePolicy,
+        String id) {
+      super(userDao, userLevelUpgradePolicy);
+      this.id = id;
+    }
+
+    @Override
+    protected void upgradeLevel(User user) {
+      if (user.getId().equals(this.id)) {
+        throw new TestUserServiceException();
+      }
+      super.upgradeLevel(user);
+    }
+  }
+
+  static class TestUserServiceException extends RuntimeException {
+
+  }
 }
