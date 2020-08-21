@@ -3,6 +3,7 @@ package dev.idion.springbook.user.service;
 import static dev.idion.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 import static dev.idion.springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import dev.idion.springbook.user.dao.TestDaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
@@ -24,8 +25,12 @@ class UserServiceTest {
   @Autowired
   UserDao userDao;
 
+
   @Autowired
   UserService userService;
+
+  @Autowired
+  UserLevelUpgradePolicy userLevelUpgradePolicy;
 
   List<User> users;
 
@@ -76,6 +81,27 @@ class UserServiceTest {
 
     assertThat(userWithLevelRead).isEqualToComparingFieldByField(userWithLevel);
     assertThat(userWithoutLevelRead).isEqualToComparingFieldByField(userWithoutLevel);
+  }
+
+  @Test
+  void upgradeAllOrNothing() {
+    UserService testUserService =
+        new TestUserService(this.userDao, this.userLevelUpgradePolicy, users.get(3).getId());
+
+    userDao.deleteAll();
+    for (User user : users) {
+      userDao.add(user);
+    }
+
+    try {
+      testUserService.upgradeLevels();
+      fail("TestUserServiceException expected.");
+    } catch (TestUserServiceException e) {
+    }
+
+    User user1 = users.get(1);
+    checkLevelUpgraded(user1, false);
+    checkLevelUpgraded(userDao.get(user1.getId()), false);
   }
 
   private void checkLevelUpgraded(User user, boolean upgraded) {
