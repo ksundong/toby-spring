@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.service.UserService;
 import java.util.List;
@@ -31,9 +32,9 @@ class UserDaoTest {
     UserDao userDao = new UserDaoJdbc(jdbcTemplate);
 
     this.userService = new UserService(userDao);
-    this.user1 = new User("gyumee", "박성철", "springno1");
-    this.user2 = new User("leegw700", "이길원", "springno2");
-    this.user3 = new User("bumjin", "박범진", "springno3");
+    this.user1 = new User("gyumee", "박성철", "springno1", 1, 0, Level.BASIC);
+    this.user2 = new User("leegw700", "이길원", "springno2", 55, 10, Level.SILVER);
+    this.user3 = new User("bumjin", "박범진", "springno3", 100, 40, Level.GOLD);
   }
 
   @Test
@@ -46,12 +47,10 @@ class UserDaoTest {
     assertEquals(2, this.userService.countUsers());
 
     User userGet1 = this.userService.getUser(this.user1.getId());
-    assertEquals(this.user1.getName(), userGet1.getName());
-    assertEquals(this.user1.getPassword(), userGet1.getPassword());
+    assertThat(userGet1).isEqualToComparingFieldByField(this.user1);
 
     User userGet2 = this.userService.getUser(this.user2.getId());
-    assertEquals(this.user2.getName(), userGet2.getName());
-    assertEquals(this.user2.getPassword(), userGet2.getPassword());
+    assertThat(userGet2).isEqualToComparingFieldByField(this.user2);
   }
 
   @Test

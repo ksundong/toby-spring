@@ -12,10 +12,14 @@ public class User {
   public User() {
   }
 
-  public User(String id, String name, String password) {
+  public User(String id, String name, String password, int login, int recommend,
+      Level level) {
     this.id = id;
     this.name = name;
     this.password = password;
+    this.login = login;
+    this.recommend = recommend;
+    this.level = level;
   }
 
   public String getId() {
