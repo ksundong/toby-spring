@@ -313,3 +313,24 @@ IoC 라는 약자로 많이 사용되는 제어의 역전(Inversion of Control)�
 간단히 어떤 오브젝트가 어떤 오브젝트를 사용하는지를 정의해놓은 코드라고 생각하면 된다. 이런 작업이 애플리케이션 전체에 걸쳐서 나타난다면, 컴포넌트의 의존관계에 대한 설계도와 같은 역할을 하게 될 것이다.
 
 `DaoFactory`를 분리했을 때 얻을 수 있는 장점은 매우 다양하다. 그중에서도 애플리케이션의 컴포넌트 역할을 하는 오브젝트와 애플리케이션의 구조를 결정하는 오브젝트를 분리했다는 데 가장 의미가 있다.
+
+## 5장
+
+User Table 변경
+
+| 필드명    | 타입        | 설정     |
+|-----------|-------------|----------|
+| Level     | VARCHAR(10) | Not null |
+| Login     | INT         | Not null |
+| Recommend | INT         | Not null |
+
+```mysql
+ALTER TABLE USER
+    ADD level VARCHAR(10) NOT NULL;
+
+ALTER TABLE USER
+    ADD login INT NOT NULL;
+
+ALTER TABLE USER
+    ADD recommend INT NOT NULL;
+```
