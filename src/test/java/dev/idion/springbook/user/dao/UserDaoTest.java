@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
-import dev.idion.springbook.user.service.UserService;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 class UserDaoTest {
 
-  private UserService userService;
+  private UserDao userDao;
 
   private User user1;
   private User user2;
@@ -29,9 +28,8 @@ class UserDaoTest {
     DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb",
         "spring", "book", true);
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    UserDao userDao = new UserDaoJdbc(jdbcTemplate);
+    userDao = new UserDaoJdbc(jdbcTemplate);
 
-    this.userService = new UserService(userDao);
     this.user1 = new User("gyumee", "박성철", "springno1", 1, 0, Level.BASIC);
     this.user2 = new User("leegw700", "이길원", "springno2", 55, 10, Level.SILVER);
     this.user3 = new User("bumjin", "박범진", "springno3", 100, 40, Level.GOLD);
@@ -39,75 +37,75 @@ class UserDaoTest {
 
   @Test
   void addAndGet() {
-    this.userService.deleteUsers();
-    assertEquals(0, this.userService.countUsers());
+    this.userDao.deleteAll();
+    assertEquals(0, this.userDao.getCount());
 
-    this.userService.addUser(this.user1);
-    this.userService.addUser(this.user2);
-    assertEquals(2, this.userService.countUsers());
+    this.userDao.add(this.user1);
+    this.userDao.add(this.user2);
+    assertEquals(2, this.userDao.getCount());
 
-    User userGet1 = this.userService.getUser(this.user1.getId());
+    User userGet1 = this.userDao.get(this.user1.getId());
     assertThat(userGet1).isEqualToComparingFieldByField(this.user1);
 
-    User userGet2 = this.userService.getUser(this.user2.getId());
+    User userGet2 = this.userDao.get(this.user2.getId());
     assertThat(userGet2).isEqualToComparingFieldByField(this.user2);
   }
 
   @Test
   void duplicateUserException() {
-    this.userService.deleteUsers();
-    assertEquals(0, this.userService.countUsers());
+    this.userDao.deleteAll();
+    assertEquals(0, this.userDao.getCount());
 
     assertThatThrownBy(() -> {
-      this.userService.addUser(this.user1);
-      this.userService.addUser(this.user1);
+      this.userDao.add(this.user1);
+      this.userDao.add(this.user1);
     }).isInstanceOf(DuplicateKeyException.class);
   }
 
   @Test
   void count() {
-    this.userService.deleteUsers();
-    assertEquals(0, this.userService.countUsers());
+    this.userDao.deleteAll();
+    assertEquals(0, this.userDao.getCount());
 
-    this.userService.addUser(this.user1);
-    assertEquals(1, this.userService.countUsers());
+    this.userDao.add(this.user1);
+    assertEquals(1, this.userDao.getCount());
 
-    this.userService.addUser(this.user2);
-    assertEquals(2, this.userService.countUsers());
+    this.userDao.add(this.user2);
+    assertEquals(2, this.userDao.getCount());
 
-    this.userService.addUser(user3);
-    assertEquals(3, this.userService.countUsers());
+    this.userDao.add(user3);
+    assertEquals(3, this.userDao.getCount());
   }
 
   @Test
   void getUserFailure() {
     assertThatThrownBy(() -> {
-      this.userService.deleteUsers();
-      assertEquals(0, this.userService.countUsers());
-      this.userService.getUser("unknown_id");
+      this.userDao.deleteAll();
+      assertEquals(0, this.userDao.getCount());
+      this.userDao.get("unknown_id");
     }).isInstanceOf(EmptyResultDataAccessException.class);
   }
 
   @Test
   void getAll() {
-    userService.deleteUsers();
+    userDao.deleteAll();
 
-    List<User> users0 = userService.getAll();
+    List<User> users0 = userDao.getAll();
     assertThat(users0).hasSize(0);
 
-    userService.addUser(user1);
-    List<User> users1 = userService.getAll();
+    userDao.add(user1);
+    List<User> users1 = userDao.getAll();
     assertThat(users1).hasSize(1).usingFieldByFieldElementComparator().contains(user1);
     assertThat(users1.get(0)).isEqualToComparingFieldByField(user1);
 
-    userService.addUser(user2);
-    List<User> users2 = userService.getAll();
+    userDao.add(user2);
+    List<User> users2 = userDao.getAll();
     assertThat(users2).hasSize(2).usingFieldByFieldElementComparator().contains(user1, user2);
     assertThat(users2.get(0)).isEqualToComparingFieldByField(user1);
     assertThat(users2.get(1)).isEqualToComparingFieldByField(user2);
 
-    userService.addUser(user3);
-    List<User> users3 = userService.getAll();
+    userDao.add(user3);
+    List<User> users3 = userDao.getAll();
     assertThat(users3).hasSize(3).usingFieldByFieldElementComparator()
         .contains(user1, user2, user3);
     assertThat(users3.get(0)).isEqualToComparingFieldByField(user3);
@@ -117,21 +115,21 @@ class UserDaoTest {
 
   @Test
   void update() {
-    userService.deleteUsers();
-    userService.addUser(user1);
-    userService.addUser(user2);
+    userDao.deleteAll();
+    userDao.add(user1);
+    userDao.add(user2);
 
     user1.setName("오민규");
     user1.setPassword("springno6");
     user1.setLogin(1000);
     user1.setRecommend(999);
     user1.setLevel(Level.GOLD);
-    userService.updateUser(user1);
+    userDao.update(user1);
 
-    User user1update = userService.getUser(user1.getId());
+    User user1update = userDao.get(user1.getId());
     assertThat(user1update).isEqualToComparingFieldByField(user1);
 
-    User user2same = userService.getUser(user2.getId());
+    User user2same = userDao.get(user2.getId());
     assertThat(user2same).isEqualToComparingFieldByField(user2);
   }
 }
