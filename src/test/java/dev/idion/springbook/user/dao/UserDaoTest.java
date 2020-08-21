@@ -119,6 +119,7 @@ class UserDaoTest {
   void update() {
     userService.deleteUsers();
     userService.addUser(user1);
+    userService.addUser(user2);
 
     user1.setName("오민규");
     user1.setPassword("springno6");
@@ -129,5 +130,8 @@ class UserDaoTest {
 
     User user1update = userService.getUser(user1.getId());
     assertThat(user1update).isEqualToComparingFieldByField(user1);
+
+    User user2same = userService.getUser(user2.getId());
+    assertThat(user2same).isEqualToComparingFieldByField(user2);
   }
 }
