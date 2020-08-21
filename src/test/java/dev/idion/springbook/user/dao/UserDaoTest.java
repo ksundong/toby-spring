@@ -114,4 +114,20 @@ class UserDaoTest {
     assertThat(users3.get(1)).isEqualToComparingFieldByField(user1);
     assertThat(users3.get(2)).isEqualToComparingFieldByField(user2);
   }
+
+  @Test
+  void update() {
+    userService.deleteUsers();
+    userService.addUser(user1);
+
+    user1.setName("오민규");
+    user1.setPassword("springno6");
+    user1.setLogin(1000);
+    user1.setRecommend(999);
+    user1.setLevel(Level.GOLD);
+    userService.updateUser(user1);
+
+    User user1update = userService.getUser(user1.getId());
+    assertThat(user1update).isEqualToComparingFieldByField(user1);
+  }
 }
