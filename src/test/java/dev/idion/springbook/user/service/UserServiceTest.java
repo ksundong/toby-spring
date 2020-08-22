@@ -9,12 +9,15 @@ import dev.idion.springbook.user.dao.TestDaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
@@ -64,17 +67,25 @@ class UserServiceTest {
 
   @Test
   void upgradeLevels() {
+    MockMailSender mockMailSender = new MockMailSender();
+    UserService testUserService = new UserService(this.userDao, mockMailSender, this.txManager,
+        this.userLevelUpgradePolicy);
     userDao.deleteAll();
     for (User user : users) {
       userDao.add(user);
     }
 
-    userService.upgradeLevels();
+    testUserService.upgradeLevels();
     checkLevelUpgraded(users.get(0), false);
     checkLevelUpgraded(users.get(1), true);
     checkLevelUpgraded(users.get(2), false);
     checkLevelUpgraded(users.get(3), true);
     checkLevelUpgraded(users.get(4), false);
+
+    List<String> requests = mockMailSender.getRequests();
+    assertThat(requests).hasSize(2);
+    assertThat(requests.get(0)).isEqualTo(users.get(1).getEmail());
+    assertThat(requests.get(1)).isEqualTo(users.get(3).getEmail());
   }
 
   @Test
@@ -148,6 +159,28 @@ class UserServiceTest {
   }
 
   static class TestUserServiceException extends RuntimeException {
+
+  }
+
+  static class MockMailSender implements MailSender {
+
+    private final List<String> requests = new ArrayList<>();
+
+    public List<String> getRequests() {
+      return requests;
+    }
+
+    @Override
+    public void send(SimpleMailMessage simpleMessage) throws MailException {
+      requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
+    }
+
+    @Override
+    public void send(SimpleMailMessage... simpleMessages) throws MailException {
+      for (SimpleMailMessage simpleMessage : simpleMessages) {
+        requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
+      }
+    }
 
   }
 }
