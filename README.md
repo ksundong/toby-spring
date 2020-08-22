@@ -334,3 +334,16 @@ ALTER TABLE USER
 ALTER TABLE USER
     ADD recommend INT NOT NULL;
 ```
+
+### 메일 기능 추가
+
+User Table 변경
+
+| 필드명    | 타입         | 설정     |
+|-----------|--------------|----------|
+| email     | VARCHAR(255) | Not null |
+
+```mysql
+ALTER TABLE USER
+    ADD email VARCHAR(255) NOT NULL;
+```
