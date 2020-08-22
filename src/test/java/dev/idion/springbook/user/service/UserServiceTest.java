@@ -10,6 +10,7 @@ import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import java.util.List;
+import javax.sql.DataSource;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ class UserServiceTest {
   @Autowired
   UserDao userDao;
 
+  @Autowired
+  DataSource dataSource;
 
   @Autowired
   UserService userService;
@@ -86,7 +89,8 @@ class UserServiceTest {
   @Test
   void upgradeAllOrNothing() {
     UserService testUserService =
-        new TestUserService(this.userDao, this.userLevelUpgradePolicy, users.get(3).getId());
+        new TestUserService(this.userDao, this.dataSource, this.userLevelUpgradePolicy,
+            users.get(3).getId());
 
     userDao.deleteAll();
     for (User user : users) {
@@ -117,9 +121,9 @@ class UserServiceTest {
 
     private final String id;
 
-    public TestUserService(UserDao userDao, UserLevelUpgradePolicy userLevelUpgradePolicy,
-        String id) {
-      super(userDao, userLevelUpgradePolicy);
+    public TestUserService(UserDao userDao, DataSource dataSource,
+        UserLevelUpgradePolicy userLevelUpgradePolicy, String id) {
+      super(userDao, dataSource, userLevelUpgradePolicy);
       this.id = id;
     }
 
