@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -33,5 +35,13 @@ public class DaoFactory {
   @Bean
   public PlatformTransactionManager txManager() {
     return new DataSourceTransactionManager(dataSource());
+  }
+
+  @Bean
+  public MailSender mailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost("mail.ksug.org");
+    mailSender.setDefaultEncoding("UTF-8");
+    return mailSender;
   }
 }
