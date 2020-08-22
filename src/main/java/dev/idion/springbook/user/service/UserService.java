@@ -3,6 +3,7 @@ package dev.idion.springbook.user.service;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,14 +34,16 @@ public class UserService {
 
   public void upgradeLevels() {
     TransactionStatus status = this.txManager.getTransaction(new DefaultTransactionDefinition());
+    List<SimpleMailMessage> mailMessages = new ArrayList<>();
     try {
       List<User> users = userDao.getAll();
       for (User user : users) {
         if (canUpgradeLevel(user)) {
-          upgradeLevel(user);
+          upgradeLevel(user, mailMessages);
         }
       }
       this.txManager.commit(status);
+      this.mailSender.send(mailMessages.toArray(new SimpleMailMessage[0]));
     } catch (RuntimeException e) {
       this.txManager.rollback(status);
       throw e;
@@ -58,19 +61,19 @@ public class UserService {
     return this.userLevelUpgradePolicy.canUpgradeLevel(user);
   }
 
-  protected void upgradeLevel(User user) {
+  protected void upgradeLevel(User user, List<SimpleMailMessage> mailMessages) {
     this.userLevelUpgradePolicy.upgradeLevel(user);
     this.userDao.update(user);
-    sendUpgradeEMail(user);
+    writeUpgradeEMail(user, mailMessages);
   }
 
-  private void sendUpgradeEMail(User user) {
+  private void writeUpgradeEMail(User user, List<SimpleMailMessage> mailMessages) {
     SimpleMailMessage mailMessage = new SimpleMailMessage();
     mailMessage.setFrom("useradmin@ksug.org");
     mailMessage.setTo(user.getEmail());
     mailMessage.setSubject("Upgrade 안내");
     mailMessage.setText("사용자님의 등급이 " + user.getLevel().name() + "로 업그레이드 되었습니다.");
 
-    this.mailSender.send(mailMessage);
+    mailMessages.add(mailMessage);
   }
 }

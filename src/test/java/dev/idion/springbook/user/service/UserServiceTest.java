@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -138,11 +139,11 @@ class UserServiceTest {
     }
 
     @Override
-    protected void upgradeLevel(User user) {
+    protected void upgradeLevel(User user, List<SimpleMailMessage> mailMessages) {
       if (user.getId().equals(this.id)) {
         throw new TestUserServiceException();
       }
-      super.upgradeLevel(user);
+      super.upgradeLevel(user, mailMessages);
     }
   }
 
