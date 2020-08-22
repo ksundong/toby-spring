@@ -27,7 +27,7 @@ public class UserService {
   }
 
   public void upgradeLevels() {
-    TransactionStatus status = txManager.getTransaction(new DefaultTransactionDefinition());
+    TransactionStatus status = this.txManager.getTransaction(new DefaultTransactionDefinition());
     try {
       List<User> users = userDao.getAll();
       for (User user : users) {
@@ -35,9 +35,9 @@ public class UserService {
           upgradeLevel(user);
         }
       }
-      txManager.commit(status);
+      this.txManager.commit(status);
     } catch (RuntimeException e) {
-      txManager.rollback(status);
+      this.txManager.rollback(status);
       throw e;
     }
   }
