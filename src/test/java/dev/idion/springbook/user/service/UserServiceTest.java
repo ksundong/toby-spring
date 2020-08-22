@@ -10,7 +10,6 @@ import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import java.util.List;
-import javax.sql.DataSource;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestDaoFactory.class)
@@ -27,7 +27,7 @@ class UserServiceTest {
   UserDao userDao;
 
   @Autowired
-  DataSource dataSource;
+  PlatformTransactionManager txManager;
 
   @Autowired
   UserService userService;
@@ -89,7 +89,7 @@ class UserServiceTest {
   @Test
   void upgradeAllOrNothing() {
     UserService testUserService =
-        new TestUserService(this.userDao, this.dataSource, this.userLevelUpgradePolicy,
+        new TestUserService(this.userDao, this.txManager, this.userLevelUpgradePolicy,
             users.get(3).getId());
 
     userDao.deleteAll();
@@ -121,9 +121,9 @@ class UserServiceTest {
 
     private final String id;
 
-    public TestUserService(UserDao userDao, DataSource dataSource,
+    public TestUserService(UserDao userDao, PlatformTransactionManager txManager,
         UserLevelUpgradePolicy userLevelUpgradePolicy, String id) {
-      super(userDao, dataSource, userLevelUpgradePolicy);
+      super(userDao, txManager, userLevelUpgradePolicy);
       this.id = id;
     }
 
