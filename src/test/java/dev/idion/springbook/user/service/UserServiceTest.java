@@ -40,11 +40,15 @@ class UserServiceTest {
   @BeforeEach
   void setUp() {
     users = Lists.newArrayList(
-        new User("bumjin", "박범진", "p1", MIN_LOGCOUNT_FOR_SILVER - 1, 0, Level.BASIC),
-        new User("joytouch", "강명성", "p2", MIN_LOGCOUNT_FOR_SILVER, 0, Level.BASIC),
-        new User("erwins", "신승한", "p3", 60, MIN_RECOMMEND_FOR_GOLD - 1, Level.SILVER),
-        new User("madnite1", "이상호", "p4", 60, MIN_RECOMMEND_FOR_GOLD, Level.SILVER),
-        new User("green", "오민규", "p5", 100, Integer.MAX_VALUE, Level.GOLD)
+        new User("bumjin", "박범진", "p1", MIN_LOGCOUNT_FOR_SILVER - 1, 0, Level.BASIC,
+            "bumjin@springbook.test"),
+        new User("joytouch", "강명성", "p2", MIN_LOGCOUNT_FOR_SILVER, 0, Level.BASIC,
+            "joytouch@springbook.test"),
+        new User("erwins", "신승한", "p3", 60, MIN_RECOMMEND_FOR_GOLD - 1, Level.SILVER,
+            "erwins@springbook.test"),
+        new User("madnite1", "이상호", "p4", 60, MIN_RECOMMEND_FOR_GOLD, Level.SILVER,
+            "madnite1@springbook.test"),
+        new User("green", "오민규", "p5", 100, Integer.MAX_VALUE, Level.GOLD, "green@springbook.test")
     );
   }
 

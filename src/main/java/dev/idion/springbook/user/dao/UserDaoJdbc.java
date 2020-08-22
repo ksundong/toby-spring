@@ -20,6 +20,7 @@ public class UserDaoJdbc implements UserDao {
     user.setLogin(rs.getInt("login"));
     user.setRecommend(rs.getInt("recommend"));
     user.setLevel(Level.valueOf(rs.getString("level")));
+    user.setEmail(rs.getString("email"));
     return user;
   };
 
@@ -29,10 +30,10 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public void add(User user) throws DuplicateKeyException {
-    this.jdbcOperations
-        .update("insert into USER(id, name, password, login, recommend, level) VALUES (?,?,?,?,?,?)"
-            , user.getId(), user.getName(), user.getPassword(), user.getLogin(),
-            user.getRecommend(), user.getLevel().toString());
+    this.jdbcOperations.update(
+        "insert into USER(id, name, password, login, recommend, level, email) VALUES (?,?,?,?,?,?,?)",
+        user.getId(), user.getName(), user.getPassword(), user.getLogin(), user.getRecommend(),
+        user.getLevel().toString(), user.getEmail());
   }
 
   @Override
@@ -59,8 +60,8 @@ public class UserDaoJdbc implements UserDao {
   @Override
   public void update(User user) {
     this.jdbcOperations.update(
-        "update USER set name = ?, password = ?, login = ?, recommend = ?, level = ? where id = ?",
+        "update USER set name = ?, password = ?, login = ?, recommend = ?, level = ?, email = ? where id = ?",
         user.getName(), user.getPassword(), user.getLogin(), user.getRecommend(),
-        user.getLevel().toString(), user.getId());
+        user.getLevel().toString(), user.getEmail(), user.getId());
   }
 }

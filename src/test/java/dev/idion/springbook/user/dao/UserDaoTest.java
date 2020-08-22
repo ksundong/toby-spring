@@ -30,9 +30,12 @@ class UserDaoTest {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     userDao = new UserDaoJdbc(jdbcTemplate);
 
-    this.user1 = new User("gyumee", "박성철", "springno1", 1, 0, Level.BASIC);
-    this.user2 = new User("leegw700", "이길원", "springno2", 55, 10, Level.SILVER);
-    this.user3 = new User("bumjin", "박범진", "springno3", 100, 40, Level.GOLD);
+    this.user1 = new User("gyumee", "박성철", "springno1", 1, 0, Level.BASIC,
+        "gyumee@springbook.test");
+    this.user2 = new User("leegw700", "이길원", "springno2", 55, 10, Level.SILVER,
+        "leegw700@springbook.test");
+    this.user3 = new User("bumjin", "박범진", "springno3", 100, 40, Level.GOLD,
+        "bumjin@springbook.test");
   }
 
   @Test
@@ -124,6 +127,7 @@ class UserDaoTest {
     user1.setLogin(1000);
     user1.setRecommend(999);
     user1.setLevel(Level.GOLD);
+    user1.setEmail("mingoo@springbook.test");
     userDao.update(user1);
 
     User user1update = userDao.get(user1.getId());
