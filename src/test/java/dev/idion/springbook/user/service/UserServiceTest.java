@@ -68,7 +68,7 @@ class UserServiceTest {
   @Test
   void upgradeLevels() {
     MockMailSender mockMailSender = new MockMailSender();
-    UserService testUserService = new UserService(this.userDao, mockMailSender, this.txManager,
+    UserService testUserService = new UserServiceImpl(this.userDao, mockMailSender, this.txManager,
         this.userLevelUpgradePolicy);
     userDao.deleteAll();
     for (User user : users) {
@@ -138,7 +138,7 @@ class UserServiceTest {
     }
   }
 
-  static class TestUserService extends UserService {
+  static class TestUserService extends UserServiceImpl {
 
     private final String id;
 
@@ -181,6 +181,5 @@ class UserServiceTest {
         requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
       }
     }
-
   }
 }
