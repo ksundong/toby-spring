@@ -68,8 +68,9 @@ class UserServiceTest {
   @Test
   void upgradeLevels() {
     MockMailSender mockMailSender = new MockMailSender();
-    UserService testUserService = new UserServiceImpl(this.userDao, mockMailSender, this.txManager,
-        this.userLevelUpgradePolicy);
+    UserService testUserService = new UserServiceTx(
+        new UserServiceImpl(this.userDao, this.userLevelUpgradePolicy), this.txManager,
+        mockMailSender);
     userDao.deleteAll();
     for (User user : users) {
       userDao.add(user);
@@ -108,10 +109,9 @@ class UserServiceTest {
 
   @Test
   void upgradeAllOrNothing() {
-    UserService testUserService =
-        new TestUserService(this.userDao, this.mailSender, this.txManager,
-            this.userLevelUpgradePolicy,
-            users.get(3).getId());
+    UserService testUserService = new UserServiceTx(
+        new TestUserService(this.userDao, this.userLevelUpgradePolicy, users.get(3).getId()),
+        this.txManager, this.mailSender);
 
     userDao.deleteAll();
     for (User user : users) {
@@ -142,10 +142,9 @@ class UserServiceTest {
 
     private final String id;
 
-    public TestUserService(UserDao userDao, MailSender mailSender,
-        PlatformTransactionManager txManager, UserLevelUpgradePolicy userLevelUpgradePolicy,
+    public TestUserService(UserDao userDao, UserLevelUpgradePolicy userLevelUpgradePolicy,
         String id) {
-      super(userDao, mailSender, txManager, userLevelUpgradePolicy);
+      super(userDao, userLevelUpgradePolicy);
       this.id = id;
     }
 

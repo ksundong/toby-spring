@@ -3,47 +3,28 @@ package dev.idion.springbook.user.service;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
-import java.util.ArrayList;
 import java.util.List;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @Service
 public class UserServiceImpl implements UserService {
 
   private final UserDao userDao;
-  private final MailSender mailSender;
-  private final PlatformTransactionManager txManager;
   private final UserLevelUpgradePolicy userLevelUpgradePolicy;
 
-  public UserServiceImpl(UserDao userDao, MailSender mailSender,
-      PlatformTransactionManager txManager,
-      UserLevelUpgradePolicy userLevelUpgradePolicy) {
+  public UserServiceImpl(UserDao userDao, UserLevelUpgradePolicy userLevelUpgradePolicy) {
     this.userDao = userDao;
-    this.mailSender = mailSender;
-    this.txManager = txManager;
     this.userLevelUpgradePolicy = userLevelUpgradePolicy;
   }
 
   @Override
   public void upgradeLevels() {
-    TransactionStatus status = this.txManager.getTransaction(new DefaultTransactionDefinition());
-    List<SimpleMailMessage> mailMessages = new ArrayList<>();
-    try {
-      upgradeLevelsInternal(mailMessages);
-      this.txManager.commit(status);
-      this.mailSender.send(mailMessages.toArray(new SimpleMailMessage[0]));
-    } catch (RuntimeException e) {
-      this.txManager.rollback(status);
-      throw e;
-    }
+    throw new RuntimeException("Unimplemented");
   }
 
-  private void upgradeLevelsInternal(List<SimpleMailMessage> mailMessages) {
+  @Override
+  public void upgradeLevels(List<SimpleMailMessage> mailMessages) {
     List<User> users = userDao.getAll();
     for (User user : users) {
       if (canUpgradeLevel(user)) {
