@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -68,25 +69,27 @@ class UserServiceTest {
   @Test
   void upgradeLevels() {
     MockMailSender mockMailSender = new MockMailSender();
+    MockUserDao mockUserDao = new MockUserDao(this.users);
     UserService testUserService = new UserServiceTx(
-        new UserServiceImpl(this.userDao, mockMailSender, this.userLevelUpgradePolicy),
+        new UserServiceImpl(mockUserDao, mockMailSender, this.userLevelUpgradePolicy),
         this.txManager);
-    userDao.deleteAll();
-    for (User user : users) {
-      userDao.add(user);
-    }
 
     testUserService.upgradeLevels();
-    checkLevelUpgraded(users.get(0), false);
-    checkLevelUpgraded(users.get(1), true);
-    checkLevelUpgraded(users.get(2), false);
-    checkLevelUpgraded(users.get(3), true);
-    checkLevelUpgraded(users.get(4), false);
+
+    List<User> updated = mockUserDao.getUpdated();
+    assertThat(updated).hasSize(2);
+    checkUserAndLevel(updated.get(0), "joytouch", Level.SILVER);
+    checkUserAndLevel(updated.get(1), "madnite1", Level.GOLD);
 
     List<String> requests = mockMailSender.getRequests();
     assertThat(requests).hasSize(2);
     assertThat(requests.get(0)).isEqualTo(users.get(1).getEmail());
     assertThat(requests.get(1)).isEqualTo(users.get(3).getEmail());
+  }
+
+  private void checkUserAndLevel(User user, String expectedId, Level expectedLevel) {
+    assertThat(user.getId()).isEqualTo(expectedId);
+    assertThat(user.getLevel()).isEqualByComparingTo(expectedLevel);
   }
 
   @Test
@@ -179,6 +182,50 @@ class UserServiceTest {
       for (SimpleMailMessage simpleMessage : simpleMessages) {
         requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
       }
+    }
+  }
+
+  static class MockUserDao implements UserDao {
+
+    private final List<User> users;
+    private final List<User> updated = new ArrayList<>();
+
+    private MockUserDao(List<User> users) {
+      this.users = users;
+    }
+
+    @Override
+    public List<User> getAll() {
+      return this.users;
+    }
+
+    @Override
+    public void update(User user) {
+      updated.add(user);
+    }
+
+    public List<User> getUpdated() {
+      return updated;
+    }
+
+    @Override
+    public void add(User user) throws DuplicateKeyException {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public User get(String id) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteAll() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Integer getCount() {
+      throw new UnsupportedOperationException();
     }
   }
 }
