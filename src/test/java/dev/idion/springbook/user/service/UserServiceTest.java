@@ -14,6 +14,7 @@ import dev.idion.springbook.user.dao.TestDaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,9 +118,11 @@ class UserServiceTest {
 
   @Test
   void upgradeAllOrNothing() {
-    UserService testUserService = new UserServiceTx(
-        new TestUserService(this.userDao, this.mailSender, this.userLevelUpgradePolicy,
-            users.get(3).getId()), this.txManager);
+    UserService testUserService = new TestUserService(this.userDao, this.mailSender,
+        this.userLevelUpgradePolicy, users.get(3).getId());
+    testUserService = (UserService) Proxy
+        .newProxyInstance(getClass().getClassLoader(), new Class[]{UserService.class},
+            new TransactionHandler(testUserService, this.txManager, "upgradeLevels"));
 
     userDao.deleteAll();
     for (User user : users) {
