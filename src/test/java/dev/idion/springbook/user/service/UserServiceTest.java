@@ -69,8 +69,8 @@ class UserServiceTest {
   void upgradeLevels() {
     MockMailSender mockMailSender = new MockMailSender();
     UserService testUserService = new UserServiceTx(
-        new UserServiceImpl(this.userDao, this.userLevelUpgradePolicy), this.txManager,
-        mockMailSender);
+        new UserServiceImpl(this.userDao, mockMailSender, this.userLevelUpgradePolicy),
+        this.txManager);
     userDao.deleteAll();
     for (User user : users) {
       userDao.add(user);
@@ -110,8 +110,8 @@ class UserServiceTest {
   @Test
   void upgradeAllOrNothing() {
     UserService testUserService = new UserServiceTx(
-        new TestUserService(this.userDao, this.userLevelUpgradePolicy, users.get(3).getId()),
-        this.txManager, this.mailSender);
+        new TestUserService(this.userDao, this.mailSender, this.userLevelUpgradePolicy,
+            users.get(3).getId()), this.txManager);
 
     userDao.deleteAll();
     for (User user : users) {
@@ -142,18 +142,18 @@ class UserServiceTest {
 
     private final String id;
 
-    public TestUserService(UserDao userDao, UserLevelUpgradePolicy userLevelUpgradePolicy,
-        String id) {
-      super(userDao, userLevelUpgradePolicy);
+    public TestUserService(UserDao userDao, MailSender mailSender,
+        UserLevelUpgradePolicy userLevelUpgradePolicy, String id) {
+      super(userDao, mailSender, userLevelUpgradePolicy);
       this.id = id;
     }
 
     @Override
-    protected void upgradeLevel(User user, List<SimpleMailMessage> mailMessages) {
+    protected void upgradeLevel(User user) {
       if (user.getId().equals(this.id)) {
         throw new TestUserServiceException();
       }
-      super.upgradeLevel(user, mailMessages);
+      super.upgradeLevel(user);
     }
   }
 
