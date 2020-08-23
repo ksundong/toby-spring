@@ -1,7 +1,7 @@
 package dev.idion.springbook.user.service;
 
-import static dev.idion.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static dev.idion.springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static dev.idion.springbook.user.service.UserLevelUpgradeNormalPolicy.MIN_LOGCOUNT_FOR_SILVER;
+import static dev.idion.springbook.user.service.UserLevelUpgradeNormalPolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 

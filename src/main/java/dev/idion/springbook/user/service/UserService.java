@@ -15,9 +15,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Service
 public class UserService {
 
-  public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
-  public static final int MIN_RECOMMEND_FOR_GOLD = 30;
-
   private final UserDao userDao;
   private final MailSender mailSender;
   private final PlatformTransactionManager txManager;

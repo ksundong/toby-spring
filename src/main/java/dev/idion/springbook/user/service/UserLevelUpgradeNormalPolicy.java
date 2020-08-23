@@ -1,14 +1,14 @@
 package dev.idion.springbook.user.service;
 
-import static dev.idion.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static dev.idion.springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
-
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserLevelUpgradeNormalPolicy implements UserLevelUpgradePolicy {
+
+  public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+  public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
   @Override
   public boolean canUpgradeLevel(User user) {
