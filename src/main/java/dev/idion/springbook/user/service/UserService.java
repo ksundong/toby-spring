@@ -36,17 +36,21 @@ public class UserService {
     TransactionStatus status = this.txManager.getTransaction(new DefaultTransactionDefinition());
     List<SimpleMailMessage> mailMessages = new ArrayList<>();
     try {
-      List<User> users = userDao.getAll();
-      for (User user : users) {
-        if (canUpgradeLevel(user)) {
-          upgradeLevel(user, mailMessages);
-        }
-      }
+      upgradeLevelsInternal(mailMessages);
       this.txManager.commit(status);
       this.mailSender.send(mailMessages.toArray(new SimpleMailMessage[0]));
     } catch (RuntimeException e) {
       this.txManager.rollback(status);
       throw e;
+    }
+  }
+
+  private void upgradeLevelsInternal(List<SimpleMailMessage> mailMessages) {
+    List<User> users = userDao.getAll();
+    for (User user : users) {
+      if (canUpgradeLevel(user)) {
+        upgradeLevel(user, mailMessages);
+      }
     }
   }
 
