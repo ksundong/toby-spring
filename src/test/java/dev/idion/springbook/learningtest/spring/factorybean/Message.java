@@ -2,7 +2,7 @@ package dev.idion.springbook.learningtest.spring.factorybean;
 
 public class Message {
 
-  String text;
+  private String text;
 
   private Message(String text) {
     this.text = text;
