@@ -103,7 +103,6 @@ class UserServiceTest {
     assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
   }
 
-
   @Test
   void add() {
     userDao.deleteAll();
