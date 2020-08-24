@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -46,6 +47,9 @@ class UserServiceTest {
 
   @Autowired
   UserLevelUpgradePolicy userLevelUpgradePolicy;
+
+  @Autowired
+  ProxyFactoryBean proxyFactoryBean;
 
   List<User> users;
 
@@ -118,13 +122,12 @@ class UserServiceTest {
 
   @Test
   @DirtiesContext
-  void upgradeAllOrNothing() throws Exception {
+  void upgradeAllOrNothing() {
     UserService testUserService = new TestUserService(this.userDao, this.mailSender,
         this.userLevelUpgradePolicy, users.get(3).getId());
-    TxProxyFactoryBean txProxyFactoryBean = new TxProxyFactoryBean(testUserService, txManager,
-        "upgradeLevels", UserService.class);
+    proxyFactoryBean.setTarget(testUserService);
 
-    UserService txUserService = (UserService) txProxyFactoryBean.getObject();
+    UserService txUserService = (UserService) proxyFactoryBean.getObject();
 
     userDao.deleteAll();
     for (User user : users) {

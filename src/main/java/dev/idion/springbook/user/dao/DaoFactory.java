@@ -1,8 +1,11 @@
 package dev.idion.springbook.user.dao;
 
-import dev.idion.springbook.user.service.TxProxyFactoryBean;
+import dev.idion.springbook.user.service.TransactionAdvice;
 import dev.idion.springbook.user.service.UserService;
 import javax.sql.DataSource;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +57,27 @@ public class DaoFactory {
   }
 
   @Bean
-  public TxProxyFactoryBean userService() {
-    return new TxProxyFactoryBean(userServiceImpl, txManager(), "upgradeLevels", UserService.class);
+  public TransactionAdvice transactionAdvice() {
+    return new TransactionAdvice(txManager());
+  }
+
+  @Bean
+  public NameMatchMethodPointcut transactionPointcut() {
+    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+    pointcut.setMappedName("upgrade*");
+    return pointcut;
+  }
+
+  @Bean
+  public DefaultPointcutAdvisor transactionAdvisor() {
+    return new DefaultPointcutAdvisor(transactionPointcut(), transactionAdvice());
+  }
+
+  @Bean
+  public ProxyFactoryBean userService() {
+    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+    proxyFactoryBean.setTarget(userServiceImpl);
+    proxyFactoryBean.addAdvisor(transactionAdvisor());
+    return proxyFactoryBean;
   }
 }
