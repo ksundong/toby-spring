@@ -1,11 +1,10 @@
 package dev.idion.springbook.user.dao;
 
+import dev.idion.springbook.user.service.NameMatchClassMethodPointcut;
 import dev.idion.springbook.user.service.TransactionAdvice;
-import dev.idion.springbook.user.service.UserService;
 import javax.sql.DataSource;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +18,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @ComponentScan(basePackages = "dev.idion.springbook.user")
 public class DaoFactory {
-
-  private final UserService userServiceImpl;
-
-  public DaoFactory(UserService userServiceImpl) {
-    this.userServiceImpl = userServiceImpl;
-  }
 
   @Bean
   public DataSource dataSource() {
@@ -62,8 +55,9 @@ public class DaoFactory {
   }
 
   @Bean
-  public NameMatchMethodPointcut transactionPointcut() {
-    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+  public NameMatchClassMethodPointcut transactionPointcut() {
+    NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
+    pointcut.setMappedName("*ServiceImpl");
     pointcut.setMappedName("upgrade*");
     return pointcut;
   }
@@ -74,10 +68,7 @@ public class DaoFactory {
   }
 
   @Bean
-  public ProxyFactoryBean userService() {
-    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-    proxyFactoryBean.setTarget(userServiceImpl);
-    proxyFactoryBean.addAdvisor(transactionAdvisor());
-    return proxyFactoryBean;
+  public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+    return new DefaultAdvisorAutoProxyCreator();
   }
 }

@@ -20,13 +20,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @ExtendWith(SpringExtension.class)
@@ -42,14 +43,16 @@ class UserServiceTest {
   @Autowired
   PlatformTransactionManager txManager;
 
+  @Qualifier("userServiceImpl")
   @Autowired
   UserService userService;
 
+  @Qualifier("testUserServiceImpl")
   @Autowired
-  UserLevelUpgradePolicy userLevelUpgradePolicy;
+  UserService txUserService;
 
   @Autowired
-  ProxyFactoryBean proxyFactoryBean;
+  UserLevelUpgradePolicy userLevelUpgradePolicy;
 
   List<User> users;
 
@@ -78,11 +81,10 @@ class UserServiceTest {
     UserDao mockUserDao = mock(UserDao.class);
     when(mockUserDao.getAll()).thenReturn(this.users);
     MailSender mockMailSender = mock(MailSender.class);
-    UserService testUserService = new UserServiceTx(
-        new UserServiceImpl(mockUserDao, mockMailSender, this.userLevelUpgradePolicy),
-        this.txManager);
+    ReflectionTestUtils.setField(this.userService, "userDao", mockUserDao);
+    ReflectionTestUtils.setField(this.userService, "mailSender", mockMailSender);
 
-    testUserService.upgradeLevels();
+    this.userService.upgradeLevels();
 
     verify(mockUserDao, times(2)).update(any(User.class));
     verify(mockUserDao, times(1)).update(users.get(1));
@@ -123,12 +125,6 @@ class UserServiceTest {
   @Test
   @DirtiesContext
   void upgradeAllOrNothing() {
-    UserService testUserService = new TestUserService(this.userDao, this.mailSender,
-        this.userLevelUpgradePolicy, users.get(3).getId());
-    proxyFactoryBean.setTarget(testUserService);
-
-    UserService txUserService = (UserService) proxyFactoryBean.getObject();
-
     userDao.deleteAll();
     for (User user : users) {
       userDao.add(user);
@@ -151,25 +147,6 @@ class UserServiceTest {
       assertThat(userUpdate.getLevel()).isEqualByComparingTo(user.getLevel().nextLevel());
     } else {
       assertThat(userUpdate.getLevel()).isEqualByComparingTo(user.getLevel());
-    }
-  }
-
-  static class TestUserService extends UserServiceImpl {
-
-    private final String id;
-
-    public TestUserService(UserDao userDao, MailSender mailSender,
-        UserLevelUpgradePolicy userLevelUpgradePolicy, String id) {
-      super(userDao, mailSender, userLevelUpgradePolicy);
-      this.id = id;
-    }
-
-    @Override
-    protected void upgradeLevel(User user) {
-      if (user.getId().equals(this.id)) {
-        throw new TestUserServiceException();
-      }
-      super.upgradeLevel(user);
     }
   }
 
