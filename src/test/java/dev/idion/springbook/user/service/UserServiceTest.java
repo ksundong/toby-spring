@@ -14,7 +14,6 @@ import dev.idion.springbook.user.dao.TestDaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
-import java.lang.reflect.Proxy;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -117,12 +117,14 @@ class UserServiceTest {
   }
 
   @Test
-  void upgradeAllOrNothing() {
+  @DirtiesContext
+  void upgradeAllOrNothing() throws Exception {
     UserService testUserService = new TestUserService(this.userDao, this.mailSender,
         this.userLevelUpgradePolicy, users.get(3).getId());
-    testUserService = (UserService) Proxy
-        .newProxyInstance(getClass().getClassLoader(), new Class[]{UserService.class},
-            new TransactionHandler(testUserService, this.txManager, "upgradeLevels"));
+    TxProxyFactoryBean txProxyFactoryBean = new TxProxyFactoryBean(testUserService, txManager,
+        "upgradeLevels", UserService.class);
+
+    UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
     userDao.deleteAll();
     for (User user : users) {
@@ -130,7 +132,7 @@ class UserServiceTest {
     }
 
     try {
-      testUserService.upgradeLevels();
+      txUserService.upgradeLevels();
       fail("TestUserServiceException expected.");
     } catch (TestUserServiceException e) {
     }
