@@ -28,6 +28,12 @@ class FactoryBeanTest {
     assertThat(((Message) message).getText()).isEqualTo(FACTORY_BEAN);
   }
 
+  @Test
+  void getFactoryBean() {
+    Object factory = context.getBean("&message");
+    assertThat(factory.getClass()).isEqualTo(MessageFactoryBean.class);
+  }
+
   @Configuration
   static class FactoryBeanTestContext {
 
