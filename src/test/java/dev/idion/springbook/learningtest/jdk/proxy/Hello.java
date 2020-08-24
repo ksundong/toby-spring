@@ -1,4 +1,4 @@
-package dev.idion.springbook.learningtest.jdk.dynamicproxy;
+package dev.idion.springbook.learningtest.jdk.proxy;
 
 public interface Hello {
 

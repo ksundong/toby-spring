@@ -1,11 +1,11 @@
-package dev.idion.springbook.learningtest.jdk.dynamicproxy;
+package dev.idion.springbook.learningtest.jdk.proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Proxy;
 import org.junit.jupiter.api.Test;
 
-class HelloTest {
+class DynamicProxyTest {
 
   @Test
   void targetTest() {
