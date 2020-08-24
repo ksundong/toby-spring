@@ -1,5 +1,7 @@
 package dev.idion.springbook.user.dao;
 
+import dev.idion.springbook.user.service.TxProxyFactoryBean;
+import dev.idion.springbook.user.service.UserService;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,6 +16,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @ComponentScan(basePackages = "dev.idion.springbook.user")
 public class DaoFactory {
+
+  private final UserService userServiceImpl;
+
+  public DaoFactory(UserService userServiceImpl) {
+    this.userServiceImpl = userServiceImpl;
+  }
 
   @Bean
   public DataSource dataSource() {
@@ -43,5 +51,10 @@ public class DaoFactory {
     mailSender.setHost("mail.ksug.org");
     mailSender.setDefaultEncoding("UTF-8");
     return mailSender;
+  }
+
+  @Bean
+  public TxProxyFactoryBean userService() {
+    return new TxProxyFactoryBean(userServiceImpl, txManager(), "upgradeLevels", UserService.class);
   }
 }
