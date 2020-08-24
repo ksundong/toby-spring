@@ -63,30 +63,21 @@ class DynamicProxyTest {
   @Test
   void classNamePointcutAdvisor() {
     // 포인트컷 준비
-    NameMatchMethodPointcut classMethodPointcut = new class HelloWorld extends HelloTarget {
-
-    }
-    ;
+    NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+      @Override
+      public ClassFilter getClassFilter() {
+        return clazz -> clazz.getSimpleName().startsWith("HelloT");
+      }
+    };
     classMethodPointcut.setMappedName("sayH*");
 
     // 테스트
     checkAdviced(new HelloTarget(), classMethodPointcut, true);
 
-    class HelloToby extends HelloTarget {
-
-    }
+    class HelloWorld extends HelloTarget {}
     checkAdviced(new HelloWorld(), classMethodPointcut, false);
 
-    NameMatchMethodPointcut() {
-      @Override
-      public ClassFilter getClassFilter () {
-        return clazz -> {
-          String simpleName = clazz.getSimpleName();
-          System.out.println(simpleName);
-          return simpleName.startsWith("HelloT");
-        };
-      }
-    }
+    class HelloToby extends HelloTarget {}
     checkAdviced(new HelloToby(), classMethodPointcut, true);
   }
 
