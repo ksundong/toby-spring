@@ -14,6 +14,7 @@ import dev.idion.springbook.user.dao.TestDaoFactory;
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
+import dev.idion.springbook.user.exception.TestUserServiceException;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,9 +148,5 @@ class UserServiceTest {
     } else {
       assertThat(userUpdate.getLevel()).isEqualByComparingTo(user.getLevel());
     }
-  }
-
-  static class TestUserServiceException extends RuntimeException {
-
   }
 }

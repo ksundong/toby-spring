@@ -2,7 +2,7 @@ package dev.idion.springbook.user.service;
 
 import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
-import dev.idion.springbook.user.service.UserServiceTest.TestUserServiceException;
+import dev.idion.springbook.user.exception.TestUserServiceException;
 import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Component;
 
