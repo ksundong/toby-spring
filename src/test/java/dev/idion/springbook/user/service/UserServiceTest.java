@@ -5,7 +5,6 @@ import static dev.idion.springbook.user.service.UserLevelUpgradeNormalPolicy.MIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -52,6 +50,10 @@ class UserServiceTest {
   @Qualifier("testUserServiceImpl")
   @Autowired
   UserService txUserService;
+
+  @Qualifier("mockUserServiceImpl")
+  @Autowired
+  UserService mockUserService;
 
   @Autowired
   UserLevelUpgradePolicy userLevelUpgradePolicy;
@@ -79,15 +81,13 @@ class UserServiceTest {
   }
 
   @Test
-  @DirtiesContext
   void upgradeLevels() {
-    UserDao mockUserDao = mock(UserDao.class);
+    UserDao mockUserDao = (UserDao) ReflectionTestUtils.getField(this.mockUserService, "userDao");
     when(mockUserDao.getAll()).thenReturn(this.users);
-    MailSender mockMailSender = mock(MailSender.class);
-    ReflectionTestUtils.setField(this.userService, "userDao", mockUserDao);
-    ReflectionTestUtils.setField(this.userService, "mailSender", mockMailSender);
+    MailSender mockMailSender = (MailSender) ReflectionTestUtils
+        .getField(this.mockUserService, "mailSender");
 
-    this.userService.upgradeLevels();
+    this.mockUserService.upgradeLevels();
 
     verify(mockUserDao, times(2)).update(any(User.class));
     verify(mockUserDao, times(1)).update(users.get(1));

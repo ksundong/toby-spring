@@ -4,9 +4,9 @@ import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.exception.TestUserServiceException;
 import org.springframework.mail.MailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 class TestUserServiceImpl extends UserServiceImpl {
 
   private final String id = "madnite1";
