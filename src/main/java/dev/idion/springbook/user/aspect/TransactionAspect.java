@@ -3,6 +3,7 @@ package dev.idion.springbook.user.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -18,7 +19,11 @@ public class TransactionAspect {
     this.transactionManager = transactionManager;
   }
 
-  @Around("execution(* *..*ServiceImpl.upgrade*(..))")
+  @Pointcut("execution(* *..*ServiceImpl.upgrade*(..))")
+  private void transactionPointcut() {
+  }
+
+  @Around("transactionPointcut()")
   public Object enableTransaction(ProceedingJoinPoint pjp) throws Throwable {
     TransactionStatus status =
         this.transactionManager.getTransaction(new DefaultTransactionDefinition());
