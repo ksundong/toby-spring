@@ -57,7 +57,7 @@ public class DaoFactory {
   @Bean
   public NameMatchClassMethodPointcut transactionPointcut() {
     NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
-    pointcut.setMappedName("*ServiceImpl");
+    pointcut.setMappedClassName("*ServiceImpl");
     pointcut.setMappedName("upgrade*");
     return pointcut;
   }
