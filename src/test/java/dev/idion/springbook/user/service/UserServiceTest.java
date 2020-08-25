@@ -15,6 +15,7 @@ import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
 import dev.idion.springbook.user.exception.TestUserServiceException;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,5 +147,11 @@ class UserServiceTest {
     } else {
       assertThat(userUpdate.getLevel()).isEqualByComparingTo(user.getLevel());
     }
+  }
+
+  @Test
+  void advisorAutoProxyCreator() {
+    assertThat(txUserService instanceof Proxy).isTrue();
+    assertThat(userDao instanceof Proxy).isFalse();
   }
 }
