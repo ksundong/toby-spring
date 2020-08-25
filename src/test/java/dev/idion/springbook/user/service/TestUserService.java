@@ -7,11 +7,11 @@ import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-class TestUserServiceImpl extends UserServiceImpl {
+class TestUserService extends UserServiceImpl {
 
   private final String id = "madnite1";
 
-  public TestUserServiceImpl(UserDao userDao, MailSender mailSender,
+  public TestUserService(UserDao userDao, MailSender mailSender,
       UserLevelUpgradePolicy userLevelUpgradePolicy) {
     super(userDao, mailSender, userLevelUpgradePolicy);
   }
