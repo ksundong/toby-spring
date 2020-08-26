@@ -7,9 +7,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MockUserServiceImpl extends UserServiceImpl {
+public class MockUserService extends UserServiceImpl {
 
-  public MockUserServiceImpl(UserLevelUpgradePolicy userLevelUpgradePolicy) {
+  public MockUserService(UserLevelUpgradePolicy userLevelUpgradePolicy) {
     super(mock(UserDao.class), mock(MailSender.class), userLevelUpgradePolicy);
   }
 }

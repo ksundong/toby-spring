@@ -51,7 +51,7 @@ class UserServiceTest {
   @Autowired
   UserService txUserService;
 
-  @Qualifier("mockUserServiceImpl")
+  @Qualifier("mockUserService")
   @Autowired
   UserService mockUserService;
 

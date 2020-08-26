@@ -19,7 +19,7 @@ public class TransactionAspect {
     this.transactionManager = transactionManager;
   }
 
-  @Pointcut("execution(* *..*ServiceImpl.upgrade*(..))")
+  @Pointcut("bean(*Service)")
   private void transactionPointcut() {
   }
 
