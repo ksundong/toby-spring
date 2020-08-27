@@ -1,7 +1,5 @@
 package dev.idion.springbook.user.dao;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,19 +45,5 @@ public class DaoFactory {
     mailSender.setHost("mail.ksug.org");
     mailSender.setDefaultEncoding("UTF-8");
     return mailSender;
-  }
-
-  @Bean
-  public Map<String, String> sqlMap() {
-    Map<String, String> sqlMap = new HashMap<>();
-    sqlMap.put("userAdd",
-        "insert into USER(id, name, password, login, recommend, level, email) VALUES (?,?,?,?,?,?,?)");
-    sqlMap.put("userGet", "select * from USER where id = ?");
-    sqlMap.put("userDeleteAll", "delete from USER");
-    sqlMap.put("userGetCount", "select count(*) from USER");
-    sqlMap.put("userGetAll", "select * from USER order by id");
-    sqlMap.put("userUpdate",
-        "update USER set name = ?, password = ?, login = ?, recommend = ?, level = ?, email = ? where id = ?");
-    return sqlMap;
   }
 }
