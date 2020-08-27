@@ -6,7 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import dev.idion.springbook.user.domain.Level;
 import dev.idion.springbook.user.domain.User;
+import dev.idion.springbook.user.sqlservice.SimpleSqlService;
+import dev.idion.springbook.user.sqlservice.SqlService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +32,19 @@ class UserDaoTest {
     DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb",
         "spring", "book", true);
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    userDao = new UserDaoJdbc(jdbcTemplate);
+
+    Map<String, String> sqlMap = new HashMap<>();
+    sqlMap.put("userAdd",
+        "insert into USER(id, name, password, login, recommend, level, email) VALUES (?,?,?,?,?,?,?)");
+    sqlMap.put("userGet", "select * from USER where id = ?");
+    sqlMap.put("userDeleteAll", "delete from USER");
+    sqlMap.put("userGetCount", "select count(*) from USER");
+    sqlMap.put("userGetAll", "select * from USER order by id");
+    sqlMap.put("userUpdate",
+        "update USER set name = ?, password = ?, login = ?, recommend = ?, level = ?, email = ? where id = ?");
+    SqlService sqlService = new SimpleSqlService(sqlMap);
+
+    userDao = new UserDaoJdbc(sqlService, jdbcTemplate);
 
     this.user1 = new User("gyumee", "박성철", "springno1", 1, 0, Level.BASIC,
         "gyumee@springbook.test");
