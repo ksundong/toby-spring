@@ -3,6 +3,7 @@ package dev.idion.springbook.user.service;
 import static dev.idion.springbook.user.service.UserLevelUpgradeNormalPolicy.MIN_LOGCOUNT_FOR_SILVER;
 import static dev.idion.springbook.user.service.UserLevelUpgradeNormalPolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -23,12 +24,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestDaoFactory.class)
@@ -155,5 +158,15 @@ class UserServiceTest {
   void advisorAutoProxyCreator() {
     assertThat(txUserService instanceof Proxy).isTrue();
     assertThat(userDao instanceof Proxy).isFalse();
+  }
+
+  @Test
+  @Transactional(readOnly = true)
+  void 읽기전용_트랜잭션_쓰기작업_수행시_오류_발생_테스트() {
+    assertThatThrownBy(() -> {
+      for (User user : this.users) {
+        userService.add(user);
+      }
+    }).isInstanceOf(TransientDataAccessResourceException.class);
   }
 }
