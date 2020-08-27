@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema xmlns:tns="http://www.epril.com/sqlmap"
+  elementFormDefault="qualified"
+  targetNamespace="http://www.epril.com/sqlmap" xmlns="http://www.w3.org/2001/XMLSchema">
+
+  <complexType name="sqlType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="key" type="string" use="required"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <element name="sqlmap">
+    <complexType>
+      <sequence>
+        <element maxOccurs="unbounded" name="sql" type="tns:sqlType"/>
+      </sequence>
+    </complexType>
+  </element>
+
+</schema>
