@@ -47,4 +47,9 @@ public class TestDaoFactory {
   public MailSender mailSender() {
     return new DummyMailSender();
   }
+
+  @Bean
+  public String sqlmapFile() {
+    return "/userdao-sqlmap.xml";
+  }
 }

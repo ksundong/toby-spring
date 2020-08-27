@@ -46,4 +46,9 @@ public class DaoFactory {
     mailSender.setDefaultEncoding("UTF-8");
     return mailSender;
   }
+
+  @Bean
+  public String sqlmapFile() {
+    return "/userdao-sqlmap.xml";
+  }
 }
