@@ -1,10 +1,8 @@
 package dev.idion.springbook.user.sqlservice;
 
 import javax.annotation.PostConstruct;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@Primary
 @Service
 public class BaseSqlService implements SqlService {
 

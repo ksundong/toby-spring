@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -46,6 +48,13 @@ public class TestDaoFactory {
   @Bean
   public MailSender mailSender() {
     return new DummyMailSender();
+  }
+
+  @Bean
+  public Unmarshaller unmarshaller() {
+    Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+    unmarshaller.setContextPath("dev.idion.springbook.user.sqlservice.jaxb");
+    return unmarshaller;
   }
 
   @Bean
