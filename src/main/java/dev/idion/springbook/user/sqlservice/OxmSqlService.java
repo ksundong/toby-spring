@@ -1,6 +1,5 @@
 package dev.idion.springbook.user.sqlservice;
 
-import dev.idion.springbook.user.dao.UserDao;
 import dev.idion.springbook.user.sqlservice.jaxb.SqlType;
 import dev.idion.springbook.user.sqlservice.jaxb.Sqlmap;
 import java.io.IOException;
@@ -8,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +20,9 @@ public class OxmSqlService implements SqlService {
   private final SqlRegistry sqlRegistry;
 
   public OxmSqlService(BaseSqlService baseSqlService, SqlRegistry sqlRegistry,
-      Unmarshaller unmarshaller, String sqlmapFile) {
+      Unmarshaller unmarshaller, Resource sqlmap) {
     this.baseSqlService = baseSqlService;
-    this.oxmSqlReader = new OxmSqlReader(unmarshaller, sqlmapFile);
+    this.oxmSqlReader = new OxmSqlReader(unmarshaller, sqlmap);
     this.sqlRegistry = sqlRegistry;
   }
 
@@ -41,24 +41,24 @@ public class OxmSqlService implements SqlService {
   private static class OxmSqlReader implements SqlReader {
 
     private final Unmarshaller unmarshaller;
-    private final String sqlmapFile;
+    private final Resource sqlmap;
 
-    private OxmSqlReader(Unmarshaller unmarshaller, String sqlmapFile) {
+    private OxmSqlReader(Unmarshaller unmarshaller, Resource sqlmap) {
       this.unmarshaller = unmarshaller;
-      this.sqlmapFile = sqlmapFile;
+      this.sqlmap = sqlmap;
     }
 
     @Override
     public void read(SqlRegistry sqlRegistry) {
       try {
-        Source source = new StreamSource(UserDao.class.getResourceAsStream(this.sqlmapFile));
+        Source source = new StreamSource(sqlmap.getInputStream());
         Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(source);
 
         for (SqlType sqlType : sqlmap.getSql()) {
           sqlRegistry.registerSql(sqlType.getKey(), sqlType.getValue());
         }
       } catch (IOException e) {
-        throw new IllegalArgumentException(this.sqlmapFile + "을 가져올 수 없습니다.");
+        throw new IllegalArgumentException(this.sqlmap.getFilename() + "을 가져올 수 없습니다.");
       }
     }
   }

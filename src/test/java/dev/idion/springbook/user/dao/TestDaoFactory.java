@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -58,7 +60,7 @@ public class TestDaoFactory {
   }
 
   @Bean
-  public String sqlmapFile() {
-    return "/userdao-sqlmap.xml";
+  public Resource sqlmap() {
+    return new ClassPathResource("sqlmap.xml", UserDao.class);
   }
 }

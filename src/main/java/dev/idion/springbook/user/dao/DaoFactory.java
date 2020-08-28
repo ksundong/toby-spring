@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -57,7 +59,7 @@ public class DaoFactory {
   }
 
   @Bean
-  public String sqlmapFile() {
-    return "/userdao-sqlmap.xml";
+  public Resource sqlmap() {
+    return new ClassPathResource("sqlmap.xml", UserDao.class);
   }
 }

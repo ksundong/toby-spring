@@ -24,7 +24,8 @@ class OxmTest {
 
   @Test
   void unmarshallSqlMap() throws IOException {
-    Source xmlSource = new StreamSource(getClass().getResourceAsStream("/sqlmap.xml"));
+    Source xmlSource = new StreamSource(getClass().getResourceAsStream(
+        "/sqlmap.xml"));
 
     Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(xmlSource);
 
