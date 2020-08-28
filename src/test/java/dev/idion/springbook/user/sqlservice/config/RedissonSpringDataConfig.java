@@ -16,6 +16,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Configuration
 public class RedissonSpringDataConfig {
 
+  @Bean(destroyMethod = "shutdown")
+  public RedissonClient redisson(@Value("classpath:/redisson.yaml") Resource configFile)
+      throws IOException {
+    Config config = Config.fromYAML(configFile.getInputStream());
+    return Redisson.create(config);
+  }
+
   @Bean
   public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redisson) {
     return new RedissonConnectionFactory(redisson);
@@ -24,12 +31,5 @@ public class RedissonSpringDataConfig {
   @Bean
   public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
     return new StringRedisTemplate(factory);
-  }
-
-  @Bean(destroyMethod = "shutdown")
-  public RedissonClient redisson(@Value("classpath:/redisson.yaml") Resource configFile)
-      throws IOException {
-    Config config = Config.fromYAML(configFile.getInputStream());
-    return Redisson.create(config);
   }
 }
