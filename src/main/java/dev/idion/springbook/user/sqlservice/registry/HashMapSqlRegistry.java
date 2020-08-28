@@ -1,5 +1,6 @@
-package dev.idion.springbook.user.sqlservice;
+package dev.idion.springbook.user.sqlservice.registry;
 
+import dev.idion.springbook.user.sqlservice.exception.SqlNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;

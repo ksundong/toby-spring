@@ -1,5 +1,6 @@
 package dev.idion.springbook.user.sqlservice;
 
+import dev.idion.springbook.user.sqlservice.exception.SqlRetrievalFailureException;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 

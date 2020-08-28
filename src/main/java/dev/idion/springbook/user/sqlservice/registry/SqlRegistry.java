@@ -1,4 +1,6 @@
-package dev.idion.springbook.user.sqlservice;
+package dev.idion.springbook.user.sqlservice.registry;
+
+import dev.idion.springbook.user.sqlservice.exception.SqlNotFoundException;
 
 public interface SqlRegistry {
 

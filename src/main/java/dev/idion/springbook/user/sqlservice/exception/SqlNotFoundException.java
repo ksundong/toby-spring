@@ -1,4 +1,4 @@
-package dev.idion.springbook.user.sqlservice;
+package dev.idion.springbook.user.sqlservice.exception;
 
 public class SqlNotFoundException extends RuntimeException {
 

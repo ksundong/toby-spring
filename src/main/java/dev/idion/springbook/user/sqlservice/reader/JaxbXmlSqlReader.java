@@ -1,7 +1,8 @@
-package dev.idion.springbook.user.sqlservice;
+package dev.idion.springbook.user.sqlservice.reader;
 
 import dev.idion.springbook.user.sqlservice.jaxb.SqlType;
 import dev.idion.springbook.user.sqlservice.jaxb.Sqlmap;
+import dev.idion.springbook.user.sqlservice.registry.SqlRegistry;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
