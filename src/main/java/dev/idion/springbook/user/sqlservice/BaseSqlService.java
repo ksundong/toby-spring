@@ -1,17 +1,23 @@
 package dev.idion.springbook.user.sqlservice;
 
 import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BaseSqlService implements SqlService {
 
-  protected final SqlReader sqlReader;
-  protected final SqlRegistry sqlRegistry;
+  @Autowired
+  protected SqlReader sqlReader;
 
-  public BaseSqlService(SqlReader sqlReader,
-      SqlRegistry sqlRegistry) {
+  @Autowired
+  protected SqlRegistry sqlRegistry;
+
+  public void setSqlReader(SqlReader sqlReader) {
     this.sqlReader = sqlReader;
+  }
+
+  public void setSqlRegistry(SqlRegistry sqlRegistry) {
     this.sqlRegistry = sqlRegistry;
   }
 
