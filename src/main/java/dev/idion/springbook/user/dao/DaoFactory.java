@@ -1,5 +1,6 @@
 package dev.idion.springbook.user.dao;
 
+import dev.idion.springbook.user.sqlservice.config.SqlMapConfig;
 import java.sql.Driver;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -20,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "dev.idion.springbook.user")
 @EnableTransactionManagement
 @PropertySource("/database.properties")
-public class DaoFactory {
+public class DaoFactory implements SqlMapConfig {
 
   @Value("${db.driverClass}")
   private Class<? extends Driver> driverClass;
@@ -67,5 +70,10 @@ public class DaoFactory {
     mailSender.setHost("mail.ksug.org");
     mailSender.setDefaultEncoding("UTF-8");
     return mailSender;
+  }
+
+  @Override
+  public Resource getMapResource() {
+    return new ClassPathResource("sqlmap.xml", UserDao.class);
   }
 }

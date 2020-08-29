@@ -1,6 +1,7 @@
 package dev.idion.springbook.user.dao;
 
 import dev.idion.springbook.user.service.DummyMailSender;
+import dev.idion.springbook.user.sqlservice.config.SqlMapConfig;
 import java.sql.Driver;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -26,7 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 })
 @PropertySource("/database.properties")
 @EnableTransactionManagement
-public class TestDaoFactory {
+public class TestDaoFactory implements SqlMapConfig {
 
   @Value("${db.driverClass}")
   private Class<? extends Driver> driverClass;
@@ -73,10 +74,8 @@ public class TestDaoFactory {
     return new DummyMailSender();
   }
 
-  @Bean
-  public Unmarshaller unmarshaller() {
-    Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-    unmarshaller.setContextPath("dev.idion.springbook.user.sqlservice.jaxb");
-    return unmarshaller;
+  @Override
+  public Resource getMapResource() {
+    return new ClassPathResource("sqlmap.xml", UserDao.class);
   }
 }
