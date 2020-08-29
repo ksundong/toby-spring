@@ -1,12 +1,15 @@
 package dev.idion.springbook.user.dao;
 
 import dev.idion.springbook.user.service.DummyMailSender;
+import java.sql.Driver;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,20 +25,33 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "dev.idion.springbook.user", excludeFilters = {
     @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {DaoFactory.class})
 })
+@PropertySource("/database.properties")
 @EnableTransactionManagement
 public class TestDaoFactory {
+
+  private final Environment env;
+
+  public TestDaoFactory(Environment env) {
+    this.env = env;
+  }
 
   @Bean
   public DataSource dataSource() {
     SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
-    dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
-    dataSource.setUrl("jdbc:mysql://localhost:3306/testdb");
-    dataSource.setUsername("spring");
-    dataSource.setPassword("book");
+    try {
+      dataSource.setDriverClass(
+          (Class<? extends Driver>) Class.forName(env.getProperty("db.driverClass")));
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    dataSource.setUrl(env.getProperty("db.url"));
+    dataSource.setUsername(env.getProperty("db.username"));
+    dataSource.setPassword(env.getProperty("db.password"));
 
     return dataSource;
   }
+
 
   @Bean
   public JdbcTemplate jdbcTemplate() {
