@@ -9,6 +9,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.Unmarshaller;
@@ -61,5 +64,13 @@ public class DaoFactory {
   @Bean
   public Resource sqlmap() {
     return new ClassPathResource("sqlmap.xml", UserDao.class);
+  }
+
+  @Bean
+  public EmbeddedDatabase embeddedDatabase() {
+    return new EmbeddedDatabaseBuilder()
+        .setType(EmbeddedDatabaseType.H2)
+        .addScript("classpath:/schema.sql")
+        .build();
   }
 }
