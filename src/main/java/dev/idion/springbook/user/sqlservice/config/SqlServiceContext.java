@@ -1,9 +1,7 @@
 package dev.idion.springbook.user.sqlservice.config;
 
-import dev.idion.springbook.user.dao.UserDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -14,6 +12,12 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 @Configuration
 public class SqlServiceContext {
 
+  private final SqlMapConfig sqlMapConfig;
+
+  public SqlServiceContext(SqlMapConfig sqlMapConfig) {
+    this.sqlMapConfig = sqlMapConfig;
+  }
+
   @Bean
   public Unmarshaller unmarshaller() {
     Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
@@ -23,7 +27,7 @@ public class SqlServiceContext {
 
   @Bean
   public Resource sqlmap() {
-    return new ClassPathResource("sqlmap.xml", UserDao.class);
+    return this.sqlMapConfig.getMapResource();
   }
 
   @Bean
