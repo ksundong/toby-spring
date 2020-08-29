@@ -31,5 +31,4 @@ public class RedissonSpringDataConfig {
   public RedisTemplate<String, String> redisTemplate(RedissonConnectionFactory factory) {
     return new StringRedisTemplate(factory);
   }
-
 }
